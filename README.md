@@ -7,6 +7,6 @@ SOEN 343 project
 @masspaol|Massimo Paolini|40280323
 @elif5446|Elif Sag Sesen|40283343
 @afkcya|Ya Yi (Yuna) Chen|40286042
-@Ryanchung|Ryan Cheung|40282200
+@RyanCheung03|Ryan Cheung|40282200
 @ammarranko|Ammar Ranko|40281232
 @nicoledesigns|Nicole Antoun|40284018
