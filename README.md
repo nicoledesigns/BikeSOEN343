@@ -13,3 +13,13 @@ SOEN 343 project
 
 ## Team Members
 Detailed information on how to compile and deploy the application. Platform requirements are specified.
+
+
+## Running the app
+1. Open two terminals
+2. 
+    - Navigate to the frontend directory in one of them. 
+    - Navigate to the backend directory in the other.
+3. 
+    - In the backend directory navigate to tbd, then run "mvn clean install", then run "mvn spring-boot: run"
+    - In the frontend directory run "npm i", then run "npm start"
