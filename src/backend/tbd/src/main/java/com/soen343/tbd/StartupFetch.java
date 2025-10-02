@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// Fetch all users of the database and log each (with id, full name and email) on the console
 @Configuration
 public class StartupFetch {
     private static final Logger logger = LoggerFactory.getLogger(StartupFetch.class);
@@ -32,13 +33,12 @@ public class StartupFetch {
                     logger.info("Found users in database:");
                     userList.forEach(user -> {
                         logger.info("User data: ID={}, Email={}, Name={}",
-                            user.getId(),
-                            user.getEmail(),
-                            user.getFullName()
-                        );
+                                user.getId(),
+                                user.getEmail(),
+                                user.getFullName());
                         System.out.println("👤 User ID: " + user.getId() +
-                                        " | Email: " + user.getEmail() +
-                                        " | Name: " + user.getFullName());
+                                " | Email: " + user.getEmail() +
+                                " | Name: " + user.getFullName());
                     });
                 }
             } catch (Exception e) {

@@ -1,23 +1,6 @@
-/* Header Bar Styling */
-.header-bar {
-    background-color: #000000;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-}
-
-.corner-logo {
-    height: 100px;
-    width: auto;
-    filter: brightness(1.2) contrast(1.1);
-}
-
 /* Auth Container - Centered Layout */
 .auth-container {
-    padding-top: 90px;
+    padding-top: 50px;
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     display: flex;
@@ -25,10 +8,7 @@
     justify-content: center;
 }
 
-
-
 /* Card Styling */
-
 
 .card-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

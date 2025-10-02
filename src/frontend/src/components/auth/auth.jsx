@@ -32,9 +32,6 @@ const Auth = () => {
 
     return (
         <div>
-            <div className="header-bar">
-                <img src={logo} className="corner-logo" alt="logo"/>
-            </div>
 
             <div className="auth-container">
                 <div className="form-wrapper">

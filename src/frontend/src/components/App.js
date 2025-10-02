@@ -6,6 +6,7 @@ import Auth from './auth/auth.jsx';
 function App() {
   return (
     <div >
+      <Header/>
       <Auth/>
     </div>
   );
