@@ -32,7 +32,6 @@ const Auth = () => {
 
     return (
         <div>
-
             <div className="auth-container">
                 <div className="form-wrapper">
                     <div className="card">

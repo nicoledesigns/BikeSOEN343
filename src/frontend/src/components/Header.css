@@ -1,10 +1,10 @@
 .App-header {
-    height:100px;
+    height:80px;
     width:auto;
     display: flex;
-    align-items: left;
+    align-items: center;
     justify-content: space-between; 
-    padding: 0 20px;
+    padding: 0 0px;
     background-color: #211f21;
     overflow:hidden;
 }
