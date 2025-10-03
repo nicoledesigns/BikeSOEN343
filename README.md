@@ -19,8 +19,8 @@ Detailed information on how to compile and deploy the application. Platform requ
 (Requirements: jdk-25, Maven 3.5.6, React)
 1. Open two terminals
 2. 
-    - Navigate to the frontend directory in one of them. 
-    - Navigate to the backend directory in the other.
+    - Navigate to the frontend directory in one terminal. 
+    - Navigate to the backend directory in the second terminal.
 3. 
-    - In the backend directory navigate to tbd, then run "mvn clean install", then run "mvn spring-boot:run"
-    - In the frontend directory run "npm i", then run "npm start"
+    - In the backend directory navigate to tbd, then run "mvn clean install" (You only need to run this when you pull changes in case new dependencies were added), then run "mvn spring-boot:run"
+    - In the frontend directory run "npm i" (You only need to run this when you pull changes in case new dependencies were added), then run "npm start"
