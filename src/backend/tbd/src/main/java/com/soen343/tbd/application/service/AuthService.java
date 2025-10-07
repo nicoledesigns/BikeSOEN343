@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
@@ -56,7 +57,10 @@ public class AuthService {
         newUser.setEmail(email);
         newUser.setAddress(address);
         newUser.setUsername(username);
-
+        // Set default role
+        newUser.setRole("Rider");
+        // Set created_at timestamp
+        newUser.setCreated_at(new Timestamp(System.currentTimeMillis()));
         // Hash the password before saving
         String encodedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encodedPassword);
