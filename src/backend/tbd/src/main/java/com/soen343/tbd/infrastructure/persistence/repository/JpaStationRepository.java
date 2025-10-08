@@ -1,4 +1,4 @@
-package com.soen343.tbd.infrastructure.persistence.repo;
+package com.soen343.tbd.infrastructure.persistence.repository;
 
 import com.soen343.tbd.infrastructure.persistence.entity.StationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

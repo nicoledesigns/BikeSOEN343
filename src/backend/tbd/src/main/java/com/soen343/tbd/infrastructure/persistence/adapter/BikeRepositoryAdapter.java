@@ -2,6 +2,7 @@ package com.soen343.tbd.infrastructure.persistence.adapter;
 
 import com.soen343.tbd.domain.model.Bike;
 import com.soen343.tbd.domain.model.ids.BikeId;
+import com.soen343.tbd.domain.model.ids.DockId;
 import com.soen343.tbd.domain.repository.BikeRepository;
 import com.soen343.tbd.infrastructure.persistence.entity.DockEntity;
 import com.soen343.tbd.infrastructure.persistence.mapper.BikeMapper;
@@ -35,11 +36,16 @@ public class BikeRepositoryAdapter implements BikeRepository {
 
         // Set the dock relationship if dockId is present
         if (bike.getDockId() != null) {
-            DockEntity dockReference = entityManager.getReference(DockEntity.class, bike.getDockId().value());
+            var dockReference = entityManager.getReference(DockEntity.class, bike.getDockId().value());
             bikeEntity.setDock(dockReference);
         }
 
         jpaBikeRepository.save(bikeEntity);
     }
 
+    @Override
+    public Optional<Bike> findByDockId(DockId dockId) {
+        return jpaBikeRepository.findByDock_DockId(dockId.value())
+                .map(bikeMapper::toDomain);
+    }
 }

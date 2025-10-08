@@ -14,7 +14,7 @@ public class BikeEntity {
     private Long bikeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dock_id", referencedColumnName = "dock_id")
+    @JoinColumn(name = "dock_id", referencedColumnName = "dock_id", unique = true)
     private DockEntity dock;
 
     @Enumerated(EnumType.STRING)
