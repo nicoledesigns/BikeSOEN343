@@ -21,10 +21,14 @@ spring:
 
 logging:
   level:
-    com.zaxxer.hikari: DEBUG
+    com.soen343.tbd: DEBUG
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari: INFO
+    com.zaxxer.hikari.pool.HikariPool: WARN
 
 server:
-    error:
-        include-message: always
-        include-binding-errors: always
-        include-stacktrace: always
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
