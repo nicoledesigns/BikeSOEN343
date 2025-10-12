@@ -1,13 +1,29 @@
-import { Routes, Route } from 'react-router-dom';
-import Home from './pages/home/home';
-import Auth from './pages/auth/auth';
+import logo from './assets/logo.png';
+import './App.css';
+import Header from './components/header/Header.jsx';
+import Auth from './pages/auth/Auth.jsx';
+import Home from './pages/home/Home.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
   return (
-    <Routes>
-        <Route path='/' element={<Auth />} />
-        <Route path='/home' element={<Home />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Auth />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/home" element={
+          // Wrap Home component in ProtectedRoute to enforce authentication, so only authenticated users can access it
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        } />
+
+        {/* // Redirect any unknown routes to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

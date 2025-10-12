@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Map from '../../components/Map';
+import Map from '../../components/map/Map'
 
 const Home = () => {
     const navigate = useNavigate();
@@ -18,8 +18,8 @@ const Home = () => {
             localStorage.removeItem('user_role');
             delete axios.defaults.headers.common['Authorization'];
         } finally {
-            // Navigate to login page and trigger auth logout handling if present
-            navigate('/', { replace: true });
+            // Navigate to login page and trigger auth logout handling
+            navigate('/login?logout=1', { replace: true });
         }
     };
 
@@ -27,7 +27,7 @@ const Home = () => {
         <div style={{ padding: '16px' }}>
             <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <h1>Hello{fullName ? `, ${fullName}` : ''}!</h1>
-                {role && <p style={{ margin: 0, fontWeight: 500 }}>Role: {role}</p>}
+                <h1>Hello{role ? `, ${role}` : ''}!</h1>
 
                 <button type="button" onClick={handleLogout} style={{padding: '8px 12px', cursor: 'pointer'}}>
                     Logout
