@@ -1,7 +1,8 @@
-import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // This ensures that default Leaflet markers render correctly (sometimes React breaks the implicit defaults)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,6 +15,31 @@ L.Icon.Default.mergeOptions({
 const Map = () => {
     // Center of the map, where the map will render first essentially
     const center = [45.50884, -73.58781]; // These are the coords of Montreal (found online)
+
+    // State to hold stations data
+    const [stations, setStations] = useState([]);
+
+    // Fetching error state for info
+    const [fetchingError, setFetchingError] = useState([]);
+
+
+
+    // Need to wrap await functions in async methods in order to use them, you also need to use a react hook 
+    useEffect(() => {
+        async function fetchStations() {
+            try {
+                // Putting station id as 1 here, just to test for now
+                const response = await axios.get("http://localhost:8080/api/stations/1/details");
+                console.log(response)
+                setStations(response.data);
+            } catch (error) {
+                console.error("Error fetching station:", error);
+                setFetchingError(error);
+            }
+        }
+
+        fetchStations();
+    }, []);
 
     // Map size, Leaflet needs a fixed height (forced) or it wont appear
     const size = {
@@ -33,9 +59,10 @@ const Map = () => {
         <Marker position={center}>
             {/* Popup appears when you click on marker */}
             <Popup>
-                <b>Montreal Center</b> <br /> yap yap yap yap
+                <b>Montreal Center</b> <br /> {stations}
             </Popup>
         </Marker>
+        {/* You can map stations to markers here if needed */}
     </MapContainer>
     );
 };

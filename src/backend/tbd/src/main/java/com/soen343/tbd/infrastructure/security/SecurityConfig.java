@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authz -> authz
                         //the only allowed endpoints without authentication ( can be accessed without a token)
-                        .requestMatchers("/api/login", "/api/register").permitAll()
+                        .requestMatchers("/api/login", "/api/register", "/api/stations").permitAll()
                         //all other endpoints require authentication
                         .anyRequest().authenticated())
                 //If any exception occurs, this will handle it by redirecting to 401
@@ -71,7 +71,7 @@ public class SecurityConfig {
     // this is a fallback, so in case the frontend forgets to add the origin in the request, the backend will still accept it thanks to this configuration
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

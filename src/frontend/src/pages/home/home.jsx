@@ -35,7 +35,6 @@ const Home = () => {
             </header>
 
             <main>
-                {/* existing home content here */}
                 <p>Welcome to the app.</p>
                 <Map />
             </main>
