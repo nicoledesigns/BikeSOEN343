@@ -6,21 +6,28 @@ import com.soen343.tbd.domain.model.ids.BillId;
 import com.soen343.tbd.domain.model.ids.TripId;
 import com.soen343.tbd.domain.model.ids.UserId;
 
+import ch.qos.logback.core.joran.spi.DefaultClass;
+
 public class Bill {
-    private final BillId billId;
+    private BillId billId;
     private Double cost;
     private TripId tripId;
     private UserId userId;
 
     // cost per minute
     private static final double COST_PER_MINUTE = 0.5;
-
+    
     // Constructor computes cost automatically based on Trip duration
     public Bill(Trip trip) {
         this.billId = null; // Automatically set by db
         this.tripId = trip.getTripId();
         this.userId = trip.getUserId();
         this.cost = calculateCost(trip.getStartTime(), trip.getEndTime());
+    }
+
+    // Default Constructor since there is ambiguity with constructors for BillMapper
+    public Bill() {
+
     }
 
     // Method to calculate cost from start and end timestamps
@@ -40,6 +47,7 @@ public class Bill {
     -----------------------
     */
     public BillId getBillId() { return billId; }
+    public void setBillId(BillId billId) { this.billId = billId; } // Need this due to needing a write accessor and cant have custom constructor
     public Double getCost() { return cost; }
     public void setCost(Double cost) { this.cost = cost; }
     public TripId getTripId() { return tripId; }

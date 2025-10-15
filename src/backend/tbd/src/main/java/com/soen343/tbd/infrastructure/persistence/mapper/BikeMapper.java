@@ -7,7 +7,7 @@ import com.soen343.tbd.infrastructure.persistence.entity.BikeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { TripMapper.class })
 public interface BikeMapper {
 
     //Entity to Domain
@@ -18,5 +18,6 @@ public interface BikeMapper {
     // Domain to Entity - dock relationship is handled separately in the adapter
     @Mapping(target = "bikeId", expression = "java(d.getBikeId() != null ? d.getBikeId().value() : null)")
     @Mapping(target = "dock", ignore = true)
+    @Mapping(target = "trips", ignore = true)
     BikeEntity toEntity(Bike d);
 }

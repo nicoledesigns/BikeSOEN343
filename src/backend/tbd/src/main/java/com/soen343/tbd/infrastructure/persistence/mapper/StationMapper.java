@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {DockMapper.class})
+@Mapper(componentModel = "spring", uses = {DockMapper.class, TripMapper.class})
 public interface StationMapper {
 
     // Entity to Domain

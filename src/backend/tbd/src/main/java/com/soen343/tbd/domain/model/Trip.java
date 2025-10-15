@@ -10,7 +10,7 @@ import com.soen343.tbd.domain.model.ids.TripId;
 import com.soen343.tbd.domain.model.ids.UserId;
 
 public class Trip {
-    private final TripId tripId;
+    private TripId tripId;
     private TripStatus status;
     private BikeId bikeId;
     private UserId userId;
@@ -45,6 +45,9 @@ public class Trip {
         this.endTime = endTime;
         this.billId = billId;
     }
+
+    // Default Constructor for mapper to clear ambiguity
+    public Trip(){}
 
     /**
      * Ends the trip, sets end time and station, creates a Bill automatically,
@@ -111,5 +114,9 @@ public class Trip {
 
     public void setBillId(BillId billId) {
         this.billId = billId;
+    }
+
+    public void setTripId(TripId tripId) {
+        this.tripId = tripId;
     }
 }
