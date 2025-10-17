@@ -1,6 +1,6 @@
 import logo from './assets/logo.png';
 import './App.css';
-import Header from './Header.jsx';
+import Header from './Header/Header.jsx';
 import Auth from './auth/auth.jsx';
 import Home from './home/Home.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';

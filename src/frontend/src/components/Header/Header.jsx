@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "./Header.css";
-import logo from "./assets/logo.png";
+import logo from "../assets/logo.png";
 
 export default function Header(props) {
   const navigate = useNavigate();
