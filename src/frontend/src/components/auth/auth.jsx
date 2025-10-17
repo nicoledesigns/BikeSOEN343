@@ -12,7 +12,12 @@ const initialForm = {
     username: '',
     street: '',
     city: '',
-    postalCode: ''
+    postalCode: '',
+    cardHolderName: '',
+    cardNumber: '',
+    expiryMonth: '',
+    expiryYear: '',
+    cvc: ''
 };
 
 const Auth = () => {
@@ -218,6 +223,64 @@ const Auth = () => {
                                             className="form-input"
                                             required={!isLogin}
                                         />
+                                    </div>
+                                )}
+                                {/* Payment Information Fields */}
+                                {!isLogin && (
+                                    <div className="payment-box" style={{ border: '2px solid #ccc', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
+                                        <h5 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>Payment Information</h5>
+                                        <input
+                                            type="text"
+                                            name="cardHolderName"
+                                            value={formData.cardHolderName || ''}
+                                            onChange={handleInputChange}
+                                            placeholder="Cardholder Name"
+                                            className="form-input"
+                                            style={{ width: '300px', padding: '8px' }}
+                                            required
+                                        />
+                                        <input
+                                            type="text"
+                                            name="cardNumber"
+                                            value={formData.cardNumber || ''}
+                                            onChange={handleInputChange}
+                                            placeholder="Card Number"
+                                            className="form-input"
+                                            style={{ width: '300px', padding: '8px' }}
+                                            required
+                                        />
+                                        <div className="expiry-cvc-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                            <input
+                                                type="text"
+                                                name="expiryMonth"
+                                                value={formData.expiryMonth || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="MM"
+                                                className="form-input small-input"
+                                                style={{ width: '80px', padding: '8px' }}
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                name="expiryYear"
+                                                value={formData.expiryYear || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="YYYY"
+                                                className="form-input small-input"
+                                                style={{ width: '100px', padding: '8px' }}
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                name="cvc"
+                                                value={formData.cvc || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="CVC"
+                                                className="form-input small-input"
+                                                style={{ width: '80px', padding: '8px' }}
+                                                required
+                                            />
+                                        </div>
                                     </div>
                                 )}
                                 <button type="submit" className="submit-btn" disabled={isLoading}>
