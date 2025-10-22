@@ -13,6 +13,17 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
+/*
+ >> asked chat
+
+ maps conversion between StationEntity(JPA) and Station(domain)
+ autogenerates implementation & "bean" 
+ also delegates to dock and trip and some handling
+ don't need to implement it, MapStruct implements it
+
+ potentially need more @mapping for dock and trips
+ */
+
 @Mapper(componentModel = "spring", uses = {DockMapper.class, TripMapper.class, StationId.class})
 public interface StationMapper {
 

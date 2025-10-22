@@ -17,6 +17,15 @@ import java.util.stream.Collectors;
 /**
  * DTO for displaying a complete station view with all docks and bikes
  */
+
+/* gpt says 
+Availability is passed directly
+this.stationAvailability = station.getStationAvailability();
+
+That means whatever logic you write to compute availability must happen before this DTO is created, probably in the service or domain layer, or else this will send stale/incorrect info to the frontend.
+
+also docks and bikes are also dto in here so remember they're associated
+*/ 
 @JsonPropertyOrder({
     "stationId",
     "stationName",

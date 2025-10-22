@@ -11,6 +11,12 @@ import com.soen343.tbd.domain.model.enums.DockStatus;
 
 // IMPORTANT TODO:
 // NEED TO IMPLEMENT STATION AVAILABILITY LOGIC
+/*
+ probably: check number of bikes docked, capacity = n
+ 0 = empty
+ 1 to n-1 = occupied
+ n = full
+ */
 public class Station {
     private final StationId stationId;
     private final String stationName;

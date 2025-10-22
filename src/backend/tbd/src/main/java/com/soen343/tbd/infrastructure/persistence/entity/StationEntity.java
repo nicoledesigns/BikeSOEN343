@@ -6,6 +6,26 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+/*
+>> asked chatgpt
+
+TLDR: this thing is the model/template/mirror of how the stations database is on neon, does db calls
+
+uses JPA/java persistence api, so you skip writing SQL
+@s EXPLAINED
+- Entity: "this class is a DB table"
+- Table: for naming
+- Id: for primary key
+- Column: meaning the next thing is one column in DB
+- OneToMany/ManyToOne: table relationships
+
+But also we have spring data jpa so it auto implements
+findAll(), save(), deleteById()
+
+setters and getters will update db but you gotta save it?
+or somehow make the JPA manage it
+ */
+
 @Entity
 @Table(name = "stations")
 public class StationEntity {

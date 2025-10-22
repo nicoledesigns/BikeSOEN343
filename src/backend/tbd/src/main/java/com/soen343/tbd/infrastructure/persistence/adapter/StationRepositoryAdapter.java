@@ -10,6 +10,17 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.List;
 
+/*
+ >> asked chatgpt
+
+ implements interface of domain/repository/StationRepository into persistence aka db calls
+ calls db calls from repository/JpaStationRepository
+
+ @repo
+ tells spring this is a "bean"
+ aka makes it get implemented as a singleton, not spamming "new"
+ */
+
 @Repository
 public class StationRepositoryAdapter implements StationRepository {
     private final JpaStationRepository jpaStationRepository;

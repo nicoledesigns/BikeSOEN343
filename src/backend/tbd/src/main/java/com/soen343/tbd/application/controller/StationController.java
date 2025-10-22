@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+  frontend accesses here and calls functions
+  also gives status codes
+ */
+
 @RestController
 @RequestMapping("/api/stations")
 public class StationController {

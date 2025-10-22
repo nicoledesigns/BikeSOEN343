@@ -15,6 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/*
+>> asked chat
+
+ gets called by controller and links it to domain?
+ there are logs! to where tho? but good for debugging
+ makes the dtos?
+
+ maybe stationsavailability will be implemented here
+ */
+
 @Service
 public class StationService {
 
