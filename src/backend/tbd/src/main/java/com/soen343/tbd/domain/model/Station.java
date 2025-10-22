@@ -11,6 +11,7 @@ import com.soen343.tbd.domain.model.enums.DockStatus;
 
 // IMPORTANT TODO:
 // NEED TO IMPLEMENT STATION AVAILABILITY LOGIC
+// update: done?
 /*
  probably: check number of bikes docked, capacity = n
  0 = empty
@@ -74,6 +75,17 @@ public class Station {
     public void setStationAvailability(StationAvailability stationAvailability) {
         this.stationAvailability = stationAvailability;
     }
+
+    public void updateAvailability() {
+        if (numberOfBikesDocked == 0) {
+            setStationAvailability(StationAvailability.EMPTY);
+        } else if (numberOfBikesDocked == capacity) {
+            setStationAvailability(StationAvailability.FULL);
+        } else {
+            setStationAvailability(StationAvailability.OCCUPIED);
+        }
+    }
+
 
     public StationStatus getStationStatus() {
         return stationStatus;

@@ -99,6 +99,8 @@ public class StationService {
             }
         }
 
+        station.updateAvailability();
+
         logger.info("Successfully built station details DTO for stationId: {} with {} docks and {} bikes",
                     station.getStationId(), docks.size(), allBikes.size());
 
