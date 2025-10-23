@@ -12,12 +12,14 @@ import com.soen343.tbd.domain.model.enums.DockStatus;
 // IMPORTANT TODO:
 // NEED TO IMPLEMENT STATION AVAILABILITY LOGIC
 // update: done?
+// ok someone kind of need to add the updateAvail whenever bikes get moved but i dont wanna touch that rn, otherwise it does load with page refresh
 /*
  probably: check number of bikes docked, capacity = n
  0 = empty
  1 to n-1 = occupied
  n = full
  */
+// activate/deactivateStation();
 public class Station {
     private final StationId stationId;
     private final String stationName;
@@ -86,7 +88,6 @@ public class Station {
         }
     }
 
-
     public StationStatus getStationStatus() {
         return stationStatus;
     }
@@ -94,6 +95,15 @@ public class Station {
     public void setStationStatus(StationStatus stationStatus) {
         this.stationStatus = stationStatus;
     }
+
+    public void activateStation() {
+        setStationStatus(StationStatus.ACTIVE);
+    }
+
+    public void deactivateStation() {
+        setStationStatus(StationStatus.OUT_OF_SERVICE);
+    }
+
 
     public String getPosition() {
         return position;

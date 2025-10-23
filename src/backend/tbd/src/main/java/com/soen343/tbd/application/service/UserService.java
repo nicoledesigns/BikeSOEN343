@@ -8,7 +8,7 @@ import com.soen343.tbd.application.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// a class cotnainting the services to offer with a user like saving a user to the db
+// a class containing the services to offer with a user like saving a user to the db
 @Service
 public class UserService {
     @Autowired

@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import "./StationMarker.css"
 
 
-function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn }) {
+function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, toggleStationStatus, userRole }) {
     // State to track the current selected dock
     const [selectedDock, setSelectedDock] = useState(null);
-    
+
     return (
         <Marker
         key={station.stationId}
@@ -15,6 +15,20 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
             <Popup>
                 <div className="flex flex-col min-w-[220px]">
                     <h4 className="mb-2 font-semibold">{station.stationName}</h4>
+
+                    {/*start of test chunk*/}
+                    <p>Status: {station.stationStatus}</p>
+
+                    {/* Show operator toggle button if user is operator */}
+                    {userRole === "OPERATOR" && (
+                        <button
+                            className="button-operator-toggle"
+                            onClick={() => toggleStationStatus(station.stationId, station.stationStatus)}>
+
+                            {station.stationStatus === "ACTIVE" ? "Set OUT_OF_SERVICE" : "Set ACTIVE"}
+                        </button>
+                    )}
+                    {/*end of test chunk*/}
 
                     <div className="flex flex-row flex-wrap gap-2 mb-2" style={{ display: 'flex', flexDirection: 'row' }}>
                         {station.docks.map((dock) => {

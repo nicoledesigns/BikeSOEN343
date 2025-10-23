@@ -11,7 +11,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'), // Shadow under the marker
 });
 
-const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, stations }) => {
+// added , toggleStationStatus, userRole for testing
+
+const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, stations, toggleStationStatus, userRole }) => {
     // Center of the map, where the map will render first essentially
     const center = [45.552648, -73.681342]; // These are the coords of Montreal, kinda (found online)
 
@@ -34,7 +36,10 @@ const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmRet
                 stations.map((station) => (
                     <StationMarker key={`${station.stationId}-${activeBikeRental.bikeId || 'none'}`} 
                         station={station} onClickShowConfirmRental={onClickShowConfirmRental}
-                        activeBikeRental={activeBikeRental} onClickShowConfirmReturn={onClickShowConfirmReturn} />
+                        activeBikeRental={activeBikeRental} onClickShowConfirmReturn={onClickShowConfirmReturn}
+                        toggleStationStatus={toggleStationStatus}   // pass toggle handler testingg
+                        userRole={userRole}                           // pass user role testingg
+                         />
                 ))
             }
         </MapContainer>

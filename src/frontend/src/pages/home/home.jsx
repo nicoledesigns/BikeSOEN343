@@ -62,6 +62,32 @@ const Home = () => {
         fetchActiveRental();
     }, []);
 
+// lookie here block testing
+     // Add userRole state for operator testing
+     // but we have role??? commented for now
+    // const [userRole, setUserRole] = useState(localStorage.getItem('user_role') || '');
+
+    const toggleStationStatus = async (stationId, currentStatus) => {
+        // Determine new status based on current
+        const newStatus = currentStatus === "ACTIVE" ? "OUT_OF_SERVICE" : "ACTIVE";
+
+        try {
+            // Call operator API to update status
+            await axios.post(`http://localhost:8080/api/operator/stations/${stationId}/status`, { status: newStatus });
+
+            // Refresh stations after update
+            fetchStations();
+        } catch (error) {
+            console.error("Error toggling station status:", error);
+            if (error.response?.status === 401) {
+                alert("Unauthorized. Please login again.");
+                handleLogout();
+            } else {
+                alert(`Failed to update station status: ${error.response?.data || error.message}`);
+            }
+        }
+    };
+
     // Function to fetch an active rental if it exists for a user
     const fetchActiveRental = async () => {
         const responseData = await checkRental();
@@ -306,7 +332,10 @@ const Home = () => {
                 <p>Welcome to the app.</p>
                 <Map onClickShowConfirmRental={onClickShowConfirmRental} activeBikeRental={activeBikeRental}
                     onClickShowConfirmReturn={onClickShowConfirmReturn} stations={stations} 
-                    setStations={setStations} />
+                    setStations={setStations} 
+                    userRole={role}
+                    toggleStationStatus={toggleStationStatus}
+                    />
 
                 {confirmRental.active && (
                     <ConfirmationPopup
