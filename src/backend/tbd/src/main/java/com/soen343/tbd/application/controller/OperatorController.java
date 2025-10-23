@@ -7,11 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * OperatorController
- * -------------------
- * This controller exposes endpoints that only an authorized operator
- * should be able to access. It delegates logic to OperatorService.
+/*
+ CURRENT STATUS: blocked by "Unauthorized. Please login again."
+ dont really know if it works and i refuse to mess with the security layer where i'll have even more trouble tracking whats happening
  */
 @RestController
 @RequestMapping("/api/operator")
