@@ -88,6 +88,10 @@ const Home = () => {
         }
     };
 
+// end of testt
+// nvmmm part 2
+
+
     // Function to fetch an active rental if it exists for a user
     const fetchActiveRental = async () => {
         const responseData = await checkRental();

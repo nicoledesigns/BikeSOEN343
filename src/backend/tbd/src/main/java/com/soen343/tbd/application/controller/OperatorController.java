@@ -2,10 +2,14 @@ package com.soen343.tbd.application.controller;
 
 import com.soen343.tbd.application.service.OperatorService;
 import com.soen343.tbd.domain.model.enums.StationStatus;
+import com.soen343.tbd.domain.model.ids.StationId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.soen343.tbd.domain.model.ids.BikeId;
+import com.soen343.tbd.domain.model.ids.DockId;
 
 /*
  CURRENT STATUS: blocked by "Unauthorized. Please login again."
@@ -17,7 +21,6 @@ public class OperatorController {
 
     private static final Logger logger = LoggerFactory.getLogger(OperatorController.class);
 
-
     private final OperatorService operatorService;
 
     public OperatorController(OperatorService operatorService) {
@@ -26,7 +29,7 @@ public class OperatorController {
 
     @PutMapping("/stations/{stationId}/status")
     public ResponseEntity<?> updateStationStatus(
-            @PathVariable Long stationId,
+            @PathVariable StationId stationId,
             @RequestParam StationStatus newStatus) {
 
         logger.info("Received request to change status for station {} to {}", stationId, newStatus);
@@ -42,4 +45,38 @@ public class OperatorController {
             return ResponseEntity.internalServerError().body("An unexpected error occurred");
         }
     }
+/* 
+    @PostMapping("/truck/pickup/{bikeId}/{stationId}")
+    public ResponseEntity<?> pickUpBike(
+        @PathVariable BikeId bikeId,
+        @PathVariable StationId stationId) {
+        try {
+            operatorService.pickupBikeFromStation(bikeId, stationId);
+            return ResponseEntity.ok("Bike picked up successfully");
+        } catch (IllegalArgumentException e) {
+            logger.error("Failed to pick up bike: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during bike pickup", e);
+            return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        }
+    }
+
+    @PostMapping("/truck/dropoff/{bikeId}/{stationId}/{dockId}")
+    public ResponseEntity<?> dropOffBike(
+        @PathVariable BikeId bikeId, 
+        @PathVariable StationId stationId, 
+        @PathVariable DockId dockId) {
+        try {
+            operatorService.dropOffBikeAtStation(bikeId, stationId, dockId);
+            return ResponseEntity.ok("Bike dropped off successfully");
+        } catch (IllegalArgumentException e) {
+            logger.error("Failed to drop off bike: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during bike drop off", e);
+            return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        }
+    }
+*/
 }
