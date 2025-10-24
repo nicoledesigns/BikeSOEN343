@@ -76,7 +76,11 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                             </div>
                             
                             {/* Rent button */}
-                            { selectedDock.bike && !(selectedDock.bike?.status === "RESERVED") && !activeBikeRental.hasOngoingRental && userRole !== "OPERATOR" && station.stationStatus === "ACTIVE" && (
+                            { selectedDock.bike && 
+                            !(selectedDock.bike?.status === "RESERVED") &&
+                            !activeBikeRental.hasOngoingRental && 
+                            userRole !== "OPERATOR" && 
+                            station.stationStatus === "ACTIVE" && (
                             <button
                             className="button-19"
                             onClick={() => onClickShowConfirmRental(selectedDock, selectedDock.bike, station)}
@@ -86,7 +90,9 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                             )}
  
                             {/* Return button */}
-                            { activeBikeRental.hasOngoingRental && selectedDock.dockStatus === "EMPTY" && userRole !== "OPERATOR" && station.stationStatus === "ACTIVE" && (
+                            { activeBikeRental.hasOngoingRental && selectedDock.dockStatus === "EMPTY" &&
+                            userRole !== "OPERATOR" &&
+                            station.stationStatus === "ACTIVE" && (
                                 <button
                                 className="button-19-return"
                                 onClick={() => onClickShowConfirmReturn(selectedDock, activeBikeRental.bikeId, station)}
