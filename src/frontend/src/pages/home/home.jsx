@@ -62,18 +62,17 @@ const Home = () => {
         fetchActiveRental();
     }, []);
 
-// lookie here block testing
-     // Add userRole state for operator testing
-     // but we have role??? commented for now
-    // const [userRole, setUserRole] = useState(localStorage.getItem('user_role') || '');
-
+    // function for operator to toggle station status
     const toggleStationStatus = async (stationId, currentStatus) => {
         // Determine new status based on current
         const newStatus = currentStatus === "ACTIVE" ? "OUT_OF_SERVICE" : "ACTIVE";
 
         try {
-            // Call operator API to update status
-            await axios.post(`http://localhost:8080/api/operator/stations/${stationId}/status`, { status: newStatus });
+            // Call operator API to update status using POST and send newStatus in JSON body
+            await axios.post('http://localhost:8080/api/operator/stations/status', { 
+                stationId: stationId,
+                status: newStatus
+            });
 
             // Refresh stations after update
             fetchStations();
@@ -87,10 +86,6 @@ const Home = () => {
             }
         }
     };
-
-// end of testt
-// nvmmm part 2
-
 
     // Function to fetch an active rental if it exists for a user
     const fetchActiveRental = async () => {
