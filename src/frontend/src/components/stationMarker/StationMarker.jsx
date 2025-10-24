@@ -16,7 +16,6 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                 <div className="flex flex-col min-w-[220px]">
                     <h4 className="mb-2 font-semibold">{station.stationName}</h4>
 
-                    {/*start of test chunk*/}
                     <p>Status: {station.stationStatus}</p>
 
                     {/* Show operator toggle button if user is operator */}
@@ -28,7 +27,7 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                             {station.stationStatus === "ACTIVE" ? "Set OUT_OF_SERVICE" : "Set ACTIVE"}
                         </button>
                     )}
-                    {/*end of test chunk*/}
+
 
                     <div className="flex flex-row flex-wrap gap-2 mb-2" style={{ display: 'flex', flexDirection: 'row' }}>
                         {station.docks.map((dock) => {
@@ -77,7 +76,7 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                             </div>
                             
                             {/* Rent button */}
-                            { selectedDock.bike && !(selectedDock.bike?.status === "RESERVED") && !activeBikeRental.hasOngoingRental && (
+                            { selectedDock.bike && !(selectedDock.bike?.status === "RESERVED") && !activeBikeRental.hasOngoingRental && userRole !== "OPERATOR" && station.stationStatus === "ACTIVE" && (
                             <button
                             className="button-19"
                             onClick={() => onClickShowConfirmRental(selectedDock, selectedDock.bike, station)}
@@ -85,9 +84,9 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                                 Rent This Bike
                             </button>
                             )}
-
+ 
                             {/* Return button */}
-                            { activeBikeRental.hasOngoingRental && selectedDock.dockStatus === "EMPTY" && (
+                            { activeBikeRental.hasOngoingRental && selectedDock.dockStatus === "EMPTY" && userRole !== "OPERATOR" && station.stationStatus === "ACTIVE" && (
                                 <button
                                 className="button-19-return"
                                 onClick={() => onClickShowConfirmReturn(selectedDock, activeBikeRental.bikeId, station)}
