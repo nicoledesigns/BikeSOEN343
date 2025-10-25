@@ -332,6 +332,31 @@ const Home = () => {
     };
 
     
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "http://localhost:8080/api/stations/stream"
+    );
+    eventSource.addEventListener("station-update", (event) => {
+      const updatedStation = JSON.parse(event.data);
+      setStations((prevStations) => {
+        const index = prevStations.findIndex(
+          (s) => s.stationId === updatedStation.stationId
+        );
+        if (index !== -1) {
+          // Replace existing station
+          const newStations = [...prevStations];
+          newStations[index] = updatedStation;
+          return newStations;
+        } else {
+          // Add new station
+          return [...prevStations, updatedStation];
+        }
+      });
+    });
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
     return (
         <div style={{ padding: '16px' }}>
