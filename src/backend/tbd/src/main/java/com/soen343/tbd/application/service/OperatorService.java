@@ -82,7 +82,7 @@ public class OperatorService {
         // Step 1: Retrieve the entities using the IDs from the DTO
 
         // 1.1: get them ids into objects
-            BikeId bikeId = new BikeId(dto.getBikeId());
+        BikeId bikeId = new BikeId(dto.getBikeId());
         DockId sourceDockId = new DockId(dto.getSourceDockId());
         DockId targetDockId = new DockId(dto.getTargetDockId());
         StationId sourceStationId = new StationId(dto.getSourceStationId());
@@ -110,7 +110,7 @@ public class OperatorService {
         selectedBike.setDockId(targetDockId);
         bikeRepository.save(selectedBike);
         logger.info("Bike {} successfully moved to target dock: {} at target station: {}", 
-            selectedBike.getBikeId().value(), targetDock.getDockId().value(), targetStation.getStationId().value());
+        selectedBike.getBikeId().value(), targetDock.getDockId().value(), targetStation.getStationId().value());
 
         // Update source dock to empty
         sourceDock.setStatus(DockStatus.EMPTY);
