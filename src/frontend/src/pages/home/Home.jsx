@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Map from '../../components/Map'
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Map from "../../components/Map";
 import ConfirmationPopup from "../../components/confirmationPopup/ConfirmationPopup";
-import EventPopup from "../../components/eventPopup/EventPopup"
+import EventPopup from "../../components/eventPopup/EventPopup";
 
 const Home = () => {
     const navigate = useNavigate();
