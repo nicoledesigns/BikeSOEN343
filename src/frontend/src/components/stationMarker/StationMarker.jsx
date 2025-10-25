@@ -3,9 +3,32 @@ import React, { useState } from 'react';
 import "./StationMarker.css"
 
 
-function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, toggleStationStatus, userRole }) {
+function StationMarker({ 
+    station, 
+    onClickShowConfirmRental, 
+    activeBikeRental, 
+    onClickShowConfirmReturn, 
+    toggleStationStatus, 
+    userRole, 
+    rebalanceState,
+    onRetrieveForRebalance,
+    onRebalanceToTarget
+}) {
     // State to track the current selected dock
     const [selectedDock, setSelectedDock] = useState(null);
+
+    // Handler when operator clicks "Retrieve"
+    const handleRetrieve = (dock) => {
+        if (!dock.bike) return;
+        onRetrieveForRebalance(dock.bike, dock, station.stationId);
+    };
+
+    // Handler when operator clicks "Rebalance"
+    const handleRebalance = (targetDock) => {
+        onRebalanceToTarget(targetDock, station.stationId);
+        setSelectedDock(null);
+    };
+// change end
 
     return (
         <Marker
@@ -74,7 +97,38 @@ function StationMarker({ station, onClickShowConfirmRental, activeBikeRental, on
                                 Status: {selectedDock.bike?.status || "EMPTY"}
                                 </p>
                             </div>
-                            
+
+{/* CHANGED start 
+display logic seems sound
+why button-19 className*/}
+                            {/* Operator: Retrieve Bike button */}
+                            {userRole === "OPERATOR" && 
+                             selectedDock.bike && 
+                             !rebalanceState.bikeId && 
+                             selectedDock.bike.status !== "RESERVED" && (
+                                <button
+                                    className="button-19"
+                                    onClick={() => handleRetrieve(selectedDock)}
+                                >
+                                    Retrieve This Bike
+                                </button>
+                            )}
+
+                            {/* Operator: Rebalance Bike button */}
+                            {userRole === "OPERATOR" && 
+                             rebalanceState.bikeId &&
+                             selectedDock.dockId !== rebalanceState.sourceDockId && 
+                             !selectedDock.bike && (
+                                <button
+                                    className="button-19-return"
+                                    onClick={() => handleRebalance(selectedDock)}
+                                >
+                                    Rebalance Bike Here
+                                </button>
+                            )}
+
+{/* CHANGED end */}
+
                             {/* Rent button */}
                             { selectedDock.bike && 
                             !(selectedDock.bike?.status === "RESERVED") &&

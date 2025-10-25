@@ -87,6 +87,23 @@ const Home = () => {
         }
     };
 
+    // Function to handle bike rebalancing between stations
+    const rebalanceBikeApi = async (rebalanceData) => {
+        try {
+            await axios.post(`http://localhost:8080/api/operator/rebalance`, rebalanceData);
+            // Refresh stations to show updated bike positions
+            await fetchStations();
+        } catch (error) {
+            console.error("Error rebalancing bike:", error);
+            if (error.response?.status === 401) {
+                alert("Unauthorized. Please login again.");
+                handleLogout();
+            } else {
+                throw new Error(error.response?.data || error.message);
+            }
+        }
+    };
+
     // Function to fetch an active rental if it exists for a user
     const fetchActiveRental = async () => {
         const responseData = await checkRental();
@@ -329,11 +346,15 @@ const Home = () => {
 
             <main>
                 <p>Welcome to the app.</p>
-                <Map onClickShowConfirmRental={onClickShowConfirmRental} activeBikeRental={activeBikeRental}
-                    onClickShowConfirmReturn={onClickShowConfirmReturn} stations={stations} 
+                <Map 
+                    onClickShowConfirmRental={onClickShowConfirmRental}
+                    activeBikeRental={activeBikeRental}
+                    onClickShowConfirmReturn={onClickShowConfirmReturn}
+                    stations={stations} 
                     setStations={setStations} 
                     userRole={role}
                     toggleStationStatus={toggleStationStatus}
+                    rebalanceBikeApi={rebalanceBikeApi}
                     />
 
                 {confirmRental.active && (

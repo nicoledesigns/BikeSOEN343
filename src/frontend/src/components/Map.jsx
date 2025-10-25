@@ -1,3 +1,4 @@
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -11,9 +12,43 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'), // Shadow under the marker
 });
 
-// added , toggleStationStatus, userRole for testing
+const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, stations, toggleStationStatus, userRole, rebalanceBikeApi }) => {
+    // State for tracking bike rebalancing across stations
+    const [rebalanceState, setRebalanceState] = React.useState({
+        bikeId: null,
+        sourceDockId: null,
+        sourceStationId: null
+    });
 
-const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, stations, toggleStationStatus, userRole }) => {
+    // Handler for when a bike is retrieved for rebalancing
+    const handleRetrieveForRebalance = (bike, dock, stationId) => {
+        setRebalanceState({
+            bikeId: bike.bikeId,
+            sourceDockId: dock.dockId,
+            sourceStationId: stationId
+        });
+    };
+
+    // Handler for rebalancing to a target dock
+    const handleRebalanceToTarget = async (targetDock, targetStationId) => {
+        if (!rebalanceState.bikeId) return;
+        
+        const payload = {
+            bikeId: rebalanceState.bikeId,
+            sourceDockId: rebalanceState.sourceDockId,
+            sourceStationId: rebalanceState.sourceStationId,
+            targetDockId: targetDock.dockId,
+            targetStationId: targetStationId
+        };
+        
+        try {
+            await rebalanceBikeApi(payload);
+            setRebalanceState({ bikeId: null, sourceDockId: null, sourceStationId: null });
+        } catch (error) {
+            console.error("Failed to rebalance bike:", error);
+        }
+    };
+
     // Center of the map, where the map will render first essentially
     const center = [45.552648, -73.681342]; // These are the coords of Montreal, kinda (found online)
 
@@ -34,12 +69,18 @@ const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmRet
             {/* Dynamically display all markers for stations on map */}
             {stations &&
                 stations.map((station) => (
-                    <StationMarker key={`${station.stationId}-${activeBikeRental.bikeId || 'none'}`} 
-                        station={station} onClickShowConfirmRental={onClickShowConfirmRental}
-                        activeBikeRental={activeBikeRental} onClickShowConfirmReturn={onClickShowConfirmReturn}
-                        toggleStationStatus={toggleStationStatus}   // pass toggle handler testingg
-                        userRole={userRole}                           // pass user role testingg
-                         />
+                    <StationMarker 
+                        key={`${station.stationId}-${activeBikeRental.bikeId || 'none'}`} 
+                        station={station} 
+                        onClickShowConfirmRental={onClickShowConfirmRental}
+                        activeBikeRental={activeBikeRental} 
+                        onClickShowConfirmReturn={onClickShowConfirmReturn}
+                        toggleStationStatus={toggleStationStatus}
+                        userRole={userRole}
+                        rebalanceState={rebalanceState}
+                        onRetrieveForRebalance={handleRetrieveForRebalance}
+                        onRebalanceToTarget={handleRebalanceToTarget}
+                    />
                 ))
             }
         </MapContainer>

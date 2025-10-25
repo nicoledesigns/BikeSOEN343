@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.soen343.tbd.application.dto.OperatorRebalanceDTO;
+
 /*
  Allows the operator to change station status
+ Allows operator to rebalance bikes
  */
 @RestController
 @RequestMapping("/api/operator")
@@ -43,4 +46,20 @@ public class OperatorController {
         }
     }
 
+    @PostMapping("/rebalance")
+    public ResponseEntity<?> rebalanceBike(@RequestBody OperatorRebalanceDTO rebalancer) {
+        logger.info("Received request to rebalance bike with DTO: {}", rebalancer);
+
+        try {
+            // Call the rebalanceBike service function
+            operatorService.rebalanceBike(rebalancer);
+            return ResponseEntity.ok("Bike successfully rebalanced");
+        } catch (RuntimeException e) {
+            logger.error("Failed to rebalance bike: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during bike rebalance", e);
+            return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        }
+    }
 }
