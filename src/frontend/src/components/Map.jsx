@@ -20,7 +20,7 @@ const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmRet
         sourceStationId: null
     });
 
-    // Handler for when a bike is retrieved for rebalancing
+    // Handler for when a bike is retrieved for rebalancing, get bike out
     const handleRetrieveForRebalance = (bike, dock, stationId) => {
         setRebalanceState({
             bikeId: bike.bikeId,
@@ -29,7 +29,7 @@ const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmRet
         });
     };
 
-    // Handler for rebalancing to a target dock
+    // Handler for rebalancing to a target dock, the full dto used
     const handleRebalanceToTarget = async (targetDock, targetStationId) => {
         if (!rebalanceState.bikeId) return;
         

@@ -1,5 +1,7 @@
 package com.soen343.tbd.application.dto;
 
+// for operator to change station status
+
 public class StatusRequest {
     Long stationId;
     String status;

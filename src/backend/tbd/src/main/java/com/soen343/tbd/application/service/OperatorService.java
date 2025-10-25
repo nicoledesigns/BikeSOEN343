@@ -48,7 +48,7 @@ public class OperatorService {
         this.stationRepository = stationRepository;
     }
 
-    // allows operator to toggle between active and out of service for a station
+    // allows operator to toggle between active and out of service for station
     public void updateStationStatus(StationId stationId, StationStatus newStatus) {
         logger.info("Operator status update for stationId: {} to {}", stationId, newStatus);
 

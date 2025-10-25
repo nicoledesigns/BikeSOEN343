@@ -17,18 +17,17 @@ function StationMarker({
     // State to track the current selected dock
     const [selectedDock, setSelectedDock] = useState(null);
 
-    // Handler when operator clicks "Retrieve"
+    // Handler when operator clicks "Retrieve"/get bike out
     const handleRetrieve = (dock) => {
         if (!dock.bike) return;
         onRetrieveForRebalance(dock.bike, dock, station.stationId);
     };
 
-    // Handler when operator clicks "Rebalance"
+    // Handler when operator clicks "Rebalance"/put bike in
     const handleRebalance = (targetDock) => {
         onRebalanceToTarget(targetDock, station.stationId);
         setSelectedDock(null);
     };
-// change end
 
     return (
         <Marker
@@ -98,9 +97,6 @@ function StationMarker({
                                 </p>
                             </div>
 
-{/* CHANGED start 
-display logic seems sound
-why button-19 className*/}
                             {/* Operator: Retrieve Bike button */}
                             {userRole === "OPERATOR" && 
                              selectedDock.bike && 
@@ -126,8 +122,6 @@ why button-19 className*/}
                                     Rebalance Bike Here
                                 </button>
                             )}
-
-{/* CHANGED end */}
 
                             {/* Rent button */}
                             { selectedDock.bike && 
