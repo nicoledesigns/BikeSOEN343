@@ -1,8 +1,8 @@
-import React from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import StationMarker from './stationMarker/StationMarker';
+import React from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import StationMarker from "./stationMarker/StationMarker";
 
 // This ensures that default Leaflet markers render correctly (sometimes React breaks the implicit defaults)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,7 +12,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'), // Shadow under the marker
 });
 
-const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmReturn, stations, toggleStationStatus, userRole, rebalanceBikeApi }) => {
+const Map = ({ 
+    onClickShowConfirmRental,
+    activeBikeRental,
+    onClickShowConfirmReturn, 
+    stations, 
+    toggleStationStatus, 
+    userRole, 
+    rebalanceBikeApi 
+}) => {
+    // Center of the map, where the map will render first essentially
+    const center = [45.552648, -73.681342]; // These are the coords of Montreal, kinda (found online)
+
+    // Map size, Leaflet needs a fixed height (forced) or it wont appear
+    const size = {
+        height: '500px',
+        width: '50%'
+    }
+
     // State for tracking bike rebalancing across stations
     const [rebalanceState, setRebalanceState] = React.useState({
         bikeId: null,
@@ -48,15 +65,6 @@ const Map = ({ onClickShowConfirmRental, activeBikeRental, onClickShowConfirmRet
             console.error("Failed to rebalance bike:", error);
         }
     };
-
-    // Center of the map, where the map will render first essentially
-    const center = [45.552648, -73.681342]; // These are the coords of Montreal, kinda (found online)
-
-    // Map size, Leaflet needs a fixed height (forced) or it wont appear
-    const size = {
-        height: '500px',
-        width: '50%'
-    }
 
     return (
         <MapContainer center={center} zoom={11} style={size}>

@@ -62,48 +62,6 @@ const Home = () => {
         fetchActiveRental();
     }, []);
 
-    // function for operator to toggle station status
-    const toggleStationStatus = async (stationId, currentStatus) => {
-        // Determine new status based on current
-        const newStatus = currentStatus === "ACTIVE" ? "OUT_OF_SERVICE" : "ACTIVE";
-
-        try {
-            // Call operator API to update status using POST and send newStatus in JSON body
-            await axios.post('http://localhost:8080/api/operator/stations/status', { 
-                stationId: stationId,
-                status: newStatus
-            });
-
-            // Refresh stations after update
-            fetchStations();
-        } catch (error) {
-            console.error("Error toggling station status:", error);
-            if (error.response?.status === 401) {
-                alert("Unauthorized. Please login again.");
-                handleLogout();
-            } else {
-                alert(`Failed to update station status: ${error.response?.data || error.message}`);
-            }
-        }
-    };
-
-    // Function to handle bike rebalancing between stations
-    const rebalanceBikeApi = async (rebalanceData) => {
-        try {
-            await axios.post(`http://localhost:8080/api/operator/rebalance`, rebalanceData);
-            // Refresh stations to show updated bike positions
-            await fetchStations();
-        } catch (error) {
-            console.error("Error rebalancing bike:", error);
-            if (error.response?.status === 401) {
-                alert("Unauthorized. Please login again.");
-                handleLogout();
-            } else {
-                throw new Error(error.response?.data || error.message);
-            }
-        }
-    };
-
     // Function to fetch an active rental if it exists for a user
     const fetchActiveRental = async () => {
         const responseData = await checkRental();
@@ -173,6 +131,48 @@ const Home = () => {
         } finally {
             // Navigate to login page and trigger auth logout handling
             navigate('/login?logout=1', { replace: true });
+        }
+    };
+
+    // function for operator to toggle station status
+    const toggleStationStatus = async (stationId, currentStatus) => {
+        // Determine new status based on current
+        const newStatus = currentStatus === "ACTIVE" ? "OUT_OF_SERVICE" : "ACTIVE";
+
+        try {
+            // Call operator API to update status using POST and send newStatus in JSON body
+            await axios.post('http://localhost:8080/api/operator/stations/status', { 
+                stationId: stationId,
+                status: newStatus
+            });
+
+            // Refresh stations after update
+            fetchStations();
+        } catch (error) {
+            console.error("Error toggling station status:", error);
+            if (error.response?.status === 401) {
+                alert("Unauthorized. Please login again.");
+                handleLogout();
+            } else {
+                alert(`Failed to update station status: ${error.response?.data || error.message}`);
+            }
+        }
+    };
+
+    // Function to handle bike rebalancing between stations
+    const rebalanceBikeApi = async (rebalanceData) => {
+        try {
+            await axios.post(`http://localhost:8080/api/operator/rebalance`, rebalanceData);
+            // Refresh stations to show updated bike positions
+            await fetchStations();
+        } catch (error) {
+            console.error("Error rebalancing bike:", error);
+            if (error.response?.status === 401) {
+                alert("Unauthorized. Please login again.");
+                handleLogout();
+            } else {
+                throw new Error(error.response?.data || error.message);
+            }
         }
     };
 
