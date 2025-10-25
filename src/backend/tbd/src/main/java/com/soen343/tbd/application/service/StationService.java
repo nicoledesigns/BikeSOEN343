@@ -50,7 +50,7 @@ public class StationService {
             logger.warn("Station with id {} not found in repository", stationId);
             return Optional.empty();
         }
-        
+
         return getStationDTO(stationOpt);
     }
 
@@ -67,7 +67,7 @@ public class StationService {
             logger.warn("No stations found in database.");
             return List.of(); // return an empty list
         }
-        
+
         for (Station station : allStations) {
             allStationDTOs.add(getStationDTO(station));
         }
@@ -75,17 +75,19 @@ public class StationService {
         return allStationDTOs;
     }
 
-
     /*
      * Quick explanation of the below 2 methods:
      * 
-     * These methods are overloaded for Optional and non-Optional Station types. The reasoning for this
-     * is because I needed to reuse this code in order to fetch all stations on startup. These methods
-     * just convert whatever we got from repositories station fetch we convert to DTO versions.
+     * These methods are overloaded for Optional and non-Optional Station types. The
+     * reasoning for this
+     * is because I needed to reuse this code in order to fetch all stations on
+     * startup. These methods
+     * just convert whatever we got from repositories station fetch we convert to
+     * DTO versions.
      */
     private StationDetailsDTO getStationDTO(Station station) {
         logger.debug("Found station: {} with {} docks", station.getStationName(),
-                     station.getDocks() != null ? station.getDocks().size() : 0);
+                station.getDocks() != null ? station.getDocks().size() : 0);
 
         List<Dock> docks = station.getDocks() != null ? station.getDocks() : new ArrayList<>();
 
@@ -102,7 +104,7 @@ public class StationService {
         station.updateAvailability();
 
         logger.info("Successfully built station details DTO for stationId: {} with {} docks and {} bikes",
-                    station.getStationId(), docks.size(), allBikes.size());
+                station.getStationId(), docks.size(), allBikes.size());
 
         return new StationDetailsDTO(station, docks, allBikes);
     }
