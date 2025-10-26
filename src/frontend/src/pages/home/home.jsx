@@ -406,7 +406,6 @@ const Home = () => {
           activeBikeRental={activeBikeRental}
           onClickShowConfirmReturn={onClickShowConfirmReturn}
           stations={stations}
-          setStations={setStations}
           userRole={role}
           toggleStationStatus={toggleStationStatus}
           rebalanceBike={rebalanceBike}
