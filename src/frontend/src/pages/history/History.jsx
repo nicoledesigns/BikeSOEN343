@@ -10,6 +10,7 @@ const History = () => {
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
 
+
     useEffect(() => {
         loadTrips();
     }, []);
@@ -31,8 +32,19 @@ const History = () => {
     };
 
     const filterTrips = () => {
-        return allTrips.filter(trip => {
+        // Validate trip ID as it should only be numbers
+        if (searchId && !/^\d+$/.test(searchId)) {
+            alert('Trip ID must contain only numbers');
+            return [];
+        }
 
+        // Validate date range
+        if (fromDate && toDate && fromDate > toDate) {
+            alert("Starting date cannot be later than finishing date");
+            return [];
+        }
+
+        return allTrips.filter(trip => {
             // Filter by ID
             if (searchId && !trip.tripId.toString().includes(searchId)) {
                 return false;
