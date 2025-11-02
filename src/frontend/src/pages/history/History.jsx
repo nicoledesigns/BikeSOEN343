@@ -32,6 +32,7 @@ const History = () => {
 
     const filterTrips = () => {
         return allTrips.filter(trip => {
+
             // Filter by ID
             if (searchId && !trip.tripId.toString().includes(searchId)) {
                 return false;
@@ -105,6 +106,7 @@ const History = () => {
                         <div key={trip.tripId} style={{margin: '10px 0', padding: '10px', border: '1px solid #ccc'}}>
                             <h3>Trip #{trip.tripId}</h3>
                             <p>Bike: {trip.bikeId || 'N/A'}</p>
+                            <p>Bike Type: {trip.bikeType}</p>
                             <p>From Station: {trip.startStationId || 'N/A'}</p>
                             <p>To Station: {trip.endStationId || 'N/A'}</p>
                             <p>Start: {trip.startTime || 'N/A'}</p>
