@@ -27,9 +27,9 @@ public abstract class User {
         this.email = email;
         this.password = password;
         this.address = address;
-        this.username = username;
         this.role = role;
         this.createdAt = createdAt;
+        this.username = username;
     }
 
     public UserId getUserId() {

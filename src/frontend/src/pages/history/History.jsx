@@ -9,7 +9,7 @@ const History = () => {
     const [searchId, setSearchId] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
-
+    const username = localStorage.getItem('username');
 
     useEffect(() => {
         loadTrips();
@@ -117,6 +117,7 @@ const History = () => {
                     {filtered.map((trip) => (
                         <div key={trip.tripId} style={{margin: '10px 0', padding: '10px', border: '1px solid #ccc'}}>
                             <h3>Trip #{trip.tripId}</h3>
+                            <h3>User: {username}</h3>
                             <p>Bike: {trip.bikeId || 'N/A'}</p>
                             <p>Bike Type: {trip.bikeType}</p>
                             <p>From Station: {trip.startStationId || 'N/A'}</p>
