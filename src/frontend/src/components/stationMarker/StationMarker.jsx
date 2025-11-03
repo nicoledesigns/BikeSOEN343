@@ -99,17 +99,6 @@ function StationMarker({
                                 </p>
                             </div>
                             
-                            {/* Rent button, original */} 
-                            {/* 
-                            { selectedDock.bike && !(selectedDock.bike?.status === "RESERVED") && !activeBikeRental.hasOngoingRental && (
-                            <button
-                            className="button-19"
-                            onClick={() => onClickShowConfirmRental(selectedDock, selectedDock.bike, station)}
-                            >
-                                Rent This Bike
-                            </button>
-                            )}
-                            */}
 
                             {/* Rent button */}
 {selectedDock.bike && !activeBikeRental.hasOngoingRental && userRole !== "OPERATOR" && (
@@ -141,7 +130,7 @@ function StationMarker({
                                 </button>
                             )}
 {/* Reserve / Cancel button */}
-{selectedDock.bike && userRole !== "OPERATOR" && (
+{selectedDock.bike && userRole !== "OPERATOR" && !activeBikeRental.hasOngoingRental && (
   <>
     {/* If the user has no active reservation → show Reserve button */}
     {!activeReservation?.hasActiveReservation && (

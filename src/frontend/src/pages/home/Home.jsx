@@ -256,7 +256,9 @@ const fetchActiveReservation = async () => {
         setConfirmReservation({
                 active: true,
                 bike,
-                station
+                station,
+                dock: bike.dock || null  // ✅ add comma
+
             });
         };
     /*
@@ -401,6 +403,28 @@ useEffect(() => {
         let stationId = confirmRental.station.stationId;
 
         try {
+
+            // 🟢 Automatically cancel reservation if renting same reserved bike
+if (activeReservation.hasActiveReservation && activeReservation.bikeId === bikeId) {
+    try {
+        await axios.post("http://localhost:8080/api/reservations/cancel", {
+            reservationId: activeReservation.reservationId
+        });
+        console.log("Reservation automatically cancelled before renting.");
+    } catch (error) {
+        console.error("Failed to cancel reservation before rent:", error.response?.data || error.message);
+    }
+
+    // Clear state locally
+    setActiveReservation({
+        hasActiveReservation: false,
+        bikeId: null,
+        stationId: null,
+        expiresAt: null,
+        reservationId: null
+    });
+    setTimeLeft(null);
+}
             const response = await axios.post("http://localhost:8080/api/trips/rent", {
                 bikeId,
                 userEmail,
@@ -429,18 +453,6 @@ useEffect(() => {
                 dock,
                 station
             });
-
-        // ✅ Clear reservation if renting the reserved bike
-        if (activeReservation.hasActiveReservation && activeReservation.bikeId === bikeId) {
-            setActiveReservation({
-                hasActiveReservation: false,
-                bikeId: null,
-                stationId: null,
-                expiresAt: null,
-                reservationId: null
-            });
-            setTimeLeft(null);
-        }
             fetchStations();
         } catch (error) {
             console.error("Full error object:", error);
@@ -530,9 +542,22 @@ useEffect(() => {
                 dock: null,
                 station: null
             });
+    
+    await fetchStations();
 
+    // Reset reservation state so new reservations can be made
+      setActiveReservation({
+        hasActiveReservation: false,
+        bikeId: null,
+        stationId: null,
+        expiresAt: null,
+        reservationId: null
+    });
+    setReservationSuccessPopup(false);
+    setTimeLeft(null);
 
-            fetchStations();
+        // Refresh stations
+           // fetchStations();
         } catch (error) {
             console.error("Full error object:", error);
             console.error("Error response:", error.response);

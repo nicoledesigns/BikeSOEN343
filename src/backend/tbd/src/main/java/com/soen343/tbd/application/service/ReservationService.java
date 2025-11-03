@@ -78,8 +78,12 @@ public class ReservationService {
         logger.info("Found bike: {}, station: {}",
                 selectedBike.getBikeId().value(),
                 selectedStation.getStationId().value());
+    
+         // Update bike status
+        //selectedBike.setStatus(BikeStatus.RESERVED);
+        //bikeRepository.save(selectedBike);  
+        Reservation newReservation= null;
 
-        Reservation newReservation = null;
 
         // Create and save reservation
         try {
