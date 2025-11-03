@@ -8,6 +8,7 @@ const History = () => {
     const [loading, setLoading] = useState(true);
     const [searchId, setSearchId] = useState('');
     const [fromDate, setFromDate] = useState('');
+    const [bikeType, setBikeType] = useState('');
     const [toDate, setToDate] = useState('');
     const [expandedTrips, setExpandedTrips] = useState({});
 
@@ -70,6 +71,12 @@ const History = () => {
                 if (toDate && tripDate > new Date(toDate + 'T23:59:59')) return false;
             }
 
+            //filter by bike type
+            if (bikeType && trip.bikeType !== bikeType) {
+                return false;
+            }
+
+
             return true;
         });
     };
@@ -115,6 +122,18 @@ const History = () => {
                         value={toDate}
                         onChange={(e) => setToDate(e.target.value)}
                     />
+                </div>
+
+                <div style={{marginBottom: '10px'}}>
+                    <label>Bike Type: </label>
+                    <select
+                        value={bikeType}
+                        onChange={(e) => setBikeType(e.target.value)}
+                    >
+                        <option value="">All</option>
+                        <option value="STANDARD">STANDARD</option>
+                        <option value="E_BIKE">E_BIKE</option>
+                    </select>
                 </div>
 
                 <button onClick={() => { setSearchId(''); setFromDate(''); setToDate(''); }}>
