@@ -5,6 +5,7 @@ import "./StationMarker.css"
 //added onClickShowConfirmReservation
 function StationMarker({
     station,
+    icon,
     onClickShowConfirmRental,
     activeBikeRental,
     onClickShowConfirmReturn,
@@ -47,12 +48,15 @@ function StationMarker({
         <Marker
         key={station.stationId}
         position={station.position.split(",").map((coord) => parseFloat(coord.trim()))}
+        icon={icon}
         >
             <Popup>
                 <div className="flex flex-col min-w-[220px]">
                     <h4 className="mb-2 font-semibold">{station.stationName}</h4>
 
                     <p style={{ margin: "0.3em" }}>Status: {station.stationStatus}</p>
+                    <p style={{ margin: "0.3em" }}>Address: {station.address}</p>
+                    <p style={{ margin: "0.3em" }}>Position: {station.position}</p>
 
                     {/* operator only button */}
                     {userRole === "OPERATOR" && (
@@ -64,7 +68,7 @@ function StationMarker({
                     )}
 
 
-                    <div className="flex flex-row flex-wrap gap-2 mb-2" style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div className="flex flex-row flex-wrap gap-2 mb-2" style={{ display: 'flex', flexDirection: 'row', marginTop: "1.5em" }}>
                         {station.docks.map((dock) => {
                             const hasBike = dock.bike !== null;
                             const isReserved = dock.bike?.status === "RESERVED"; // or BikeStatus.RESERVED if you have enum mapping
@@ -107,6 +111,8 @@ function StationMarker({
                                 Bike ID: {selectedDock.bike?.bikeId || "None"}
                                 <br />
                                 Bike Status: {selectedDock.bike?.status || "EMPTY"}
+                                <br />
+                                Bike Type: {selectedDock.bike?.bikeType || "NONE"}
                                 </p>
                             </div>
                             
