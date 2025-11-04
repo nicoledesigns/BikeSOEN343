@@ -1,13 +1,17 @@
 package com.soen343.tbd.application.service;
 
-import com.soen343.tbd.infrastructure.persistence.entity.User;
-import com.soen343.tbd.repository.UserRepository;
+import com.soen343.tbd.domain.model.user.User;
+import com.soen343.tbd.domain.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Optional;
+
+import com.soen343.tbd.domain.model.user.Rider;
 
 @Service
 public class AuthService {
@@ -43,27 +47,23 @@ public class AuthService {
         return passwordMatches;
     }
 
-    /**
-     * Register a new user with the given details
-     *
-     * @param fullName user's full name
-     * @param email    user's email address
-     * @param password user's password (will be encoded)
-     */
-    public void registerUser(String fullName, String email, String password, String address, String username) {
+
+    public void registerUser(String fullName, String email, String password, String address, String username,
+                            String cardHolderName, String cardNumber, String expiryMonth, String expiryYear, String cvc) {
         // Create a new user entity
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setAddress(address);
-        newUser.setUsername(username);
-        // Set default role
-        newUser.setRole("Rider");
-        // Set created_at timestamp
-        newUser.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        User newUser = new Rider(null, fullName, email, password, address, username, new Timestamp(System.currentTimeMillis()), 
+                        null, new ArrayList<>(), new ArrayList<>());
+
         // Hash the password before saving
         String encodedPassword = passwordEncoder.encode(password);
         newUser.setPassword(encodedPassword);
+
+        // Set payment information
+        newUser.setCardHolderName(cardHolderName);
+        newUser.setCardNumber(cardNumber);
+        newUser.setExpiryMonth(expiryMonth);
+        newUser.setExpiryYear(expiryYear);
+        newUser.setCvc(cvc);
 
         // Save the user to the database
         userRepository.save(newUser);

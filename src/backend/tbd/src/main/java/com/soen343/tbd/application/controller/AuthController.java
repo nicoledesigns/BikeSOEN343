@@ -5,8 +5,8 @@ import com.soen343.tbd.application.dto.LoginResponse;
 import com.soen343.tbd.application.dto.SignupRequest;
 import com.soen343.tbd.application.service.AuthService;
 import com.soen343.tbd.infrastructure.security.JwtUtil;
-import com.soen343.tbd.repository.UserRepository;
-import com.soen343.tbd.infrastructure.persistence.entity.User;
+import com.soen343.tbd.domain.repository.UserRepository;
+import com.soen343.tbd.domain.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +59,12 @@ public class AuthController {
             signupRequest.getEmail(),
             signupRequest.getPassword(),
             signupRequest.getAddress(),
-            signupRequest.getUsername()
+            signupRequest.getUsername(),
+            signupRequest.getCardHolderName(),
+            signupRequest.getCardNumber(),
+            signupRequest.getExpiryMonth(),
+            signupRequest.getExpiryYear(),
+            signupRequest.getCvc()
         );
 
         Map<String, String> response = new HashMap<>();

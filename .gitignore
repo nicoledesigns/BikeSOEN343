@@ -1,10 +1,11 @@
-# IntelliJ IDEA
+# IDEs
 .idea/
-*.iws
+.vscode/
 *.iml
+*.iws
 *.ipr
 
-# Other common Java/Spring files to ignore
+# Common Java/Spring files to ignore
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -13,7 +14,7 @@ target/
 # Compiled class files
 *.class
 
-# Log files
+# Logs
 *.log
 
 # Package files
@@ -28,3 +29,31 @@ target/
 # virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# Node.js
+src/frontend/node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+**/build/
+**/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+

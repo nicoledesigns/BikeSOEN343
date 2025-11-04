@@ -12,7 +12,7 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate.default_schema: bikersdream
       hibernate.jdbc.lob.non_contextual_creation: true
-    show-sql: true     # Added to see the SQL queries being executed
+    show-sql: false     # To prevent SQL queries from being printed in the console
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -21,10 +21,15 @@ spring:
 
 logging:
   level:
-    com.zaxxer.hikari: DEBUG
+    com.soen343.tbd: DEBUG
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari: INFO
+    com.zaxxer.hikari.pool.HikariPool: WARN
 
 server:
-    error:
-        include-message: always
-        include-binding-errors: always
-        include-stacktrace: always
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    
