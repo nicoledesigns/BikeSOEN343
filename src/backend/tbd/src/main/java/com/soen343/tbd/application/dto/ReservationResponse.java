@@ -18,11 +18,11 @@ public class ReservationResponse {
 
  
 
-public ReservationResponse(String message, Long reservationId) {
-    this.message = message;
-    this.reservationId = reservationId;
-    this.hasActiveReservation = true; // optional, depending on use case
-}
+    public ReservationResponse(String message, Long reservationId) {
+        this.message = message;
+        this.reservationId = reservationId;
+        this.hasActiveReservation = true; // optional, depending on use case
+    }
 
 
      // Constructor for /create

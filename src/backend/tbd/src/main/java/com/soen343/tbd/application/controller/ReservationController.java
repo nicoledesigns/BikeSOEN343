@@ -2,6 +2,7 @@ package com.soen343.tbd.application.controller;
 
 import com.soen343.tbd.application.dto.ReservationRequest;
 import com.soen343.tbd.application.dto.ReservationResponse;
+import com.soen343.tbd.application.service.EventService;
 import com.soen343.tbd.application.service.ReservationService;
 import com.soen343.tbd.application.service.UserService;
 import com.soen343.tbd.domain.model.Reservation;
@@ -26,10 +27,12 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final UserService userService;
+    private final EventService eventService;
 
-    public ReservationController(ReservationService reservationService, UserService userService) {
+    public ReservationController(ReservationService reservationService, UserService userService, EventService eventService) {
         this.reservationService = reservationService;
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     // --- Create Reservation ---
@@ -94,23 +97,38 @@ public class ReservationController {
         }
     }
 
-    // --- Cancel Reservation ---
-    @PostMapping("/cancel")
-    public ResponseEntity<ReservationResponse> cancelReservation(@RequestBody ReservationRequest request) {
+    // --- End Reservation (Cancel or Expire) ---
+    @PostMapping("/end")
+    public ResponseEntity<ReservationResponse> endReservation(
+            @RequestBody ReservationRequest request,
+            @RequestParam(name = "type", defaultValue = "CANCEL") String type) {
+        
         if (request.getReservationId() == null) {
             return ResponseEntity.badRequest()
                     .body(new ReservationResponse("ReservationId is required"));
         }
 
         ReservationId reservationId = new ReservationId(request.getReservationId());
-        logger.info("Received cancel reservation request: ReservationId={}", reservationId.value());
+        boolean isExpired = "EXPIRE".equalsIgnoreCase(type);
+        
+        logger.info("Received {} reservation request: ReservationId={}", 
+            isExpired ? "expire" : "cancel", 
+            reservationId.value());
 
         try {
-            reservationService.cancelReservation(reservationId);
-            logger.info("Reservation {} cancelled successfully", reservationId.value());
-            return ResponseEntity.ok(new ReservationResponse("Reservation cancelled successfully"));
+            if (isExpired) {
+                reservationService.expireReservation(reservationId);
+                logger.info("Reservation {} expired", reservationId.value());
+                return ResponseEntity.ok(new ReservationResponse("Reservation expired"));
+            } else {
+                reservationService.cancelReservation(reservationId);
+                logger.info("Reservation {} cancelled successfully", reservationId.value());
+                return ResponseEntity.ok(new ReservationResponse("Reservation cancelled successfully"));
+            }
         } catch (Exception e) {
-            logger.warn("Cancel reservation failed: {}", e.getMessage());
+            logger.warn("{} reservation failed: {}", 
+                isExpired ? "Expire" : "Cancel",
+                e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

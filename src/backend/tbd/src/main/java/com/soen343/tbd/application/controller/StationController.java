@@ -2,30 +2,29 @@ package com.soen343.tbd.application.controller;
 
 import com.soen343.tbd.application.dto.StationDetailsDTO;
 import com.soen343.tbd.application.service.StationService;
-import com.soen343.tbd.application.observer.StationPublisher;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
+import com.soen343.tbd.application.observer.SSEStationObserver;
+
 @RestController
 @RequestMapping("/api/stations")
+@CrossOrigin(origins = "http://localhost:3000")
 public class StationController {
 
     private static final Logger logger = LoggerFactory.getLogger(StationController.class);
 
-    @Autowired
-    private final StationPublisher stationPublisher;
-    private StationService stationService;
+    private final StationService stationService;
+    private final SSEStationObserver sseObserver;
 
-    public StationController(StationService stationService, StationPublisher stationPublisher) {
+    public StationController(StationService stationService, SSEStationObserver sseObserver) {
         this.stationService = stationService;
-        this.stationPublisher = stationPublisher;
+        this.sseObserver = sseObserver;
     }
 
     /**
@@ -81,8 +80,9 @@ public class StationController {
     // SSE endpoint for real-time subscription to station updates
     // Persistent connection and automatic notifs when station/dock/bike data
     // changes
-    @GetMapping("/stream") // Called when frontend makes thiss request, which happens when user loads map
+    @GetMapping("/subscribe") 
     public SseEmitter subscribeToStationUpdates() {
-        return stationPublisher.subscribe();
+        logger.info("New SSE subscription request received");
+        return sseObserver.subscribe();
     }
 }
