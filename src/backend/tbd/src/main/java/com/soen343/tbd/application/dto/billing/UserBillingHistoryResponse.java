@@ -1,4 +1,4 @@
-package com.soen343.tbd.application.dto;
+package com.soen343.tbd.application.dto.billing;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -6,19 +6,24 @@ import java.util.List;
 /**
  * DTO for returning a user's complete billing history.
  */
-public class BillingHistoryResponse {
+public class UserBillingHistoryResponse {
     private String userEmail;
     private String fullName;
     private Double totalAmountSpent;
     private Integer totalTrips;
+    private Double totalOutstandingAmount;
+    private Integer totalOutstandingBills;
     private List<TripBillDTO> tripBills;
 
-    public BillingHistoryResponse(String userEmail, String fullName, Double totalAmountSpent,
-                                  Integer totalTrips, List<TripBillDTO> tripBills) {
+    public UserBillingHistoryResponse(String userEmail, String fullName, Double totalAmountSpent,
+                                  Integer totalTrips, Double totalOutstandingAmount,
+                                  Integer totalOutstandingBills, List<TripBillDTO> tripBills) {
         this.userEmail = userEmail;
         this.fullName = fullName;
         this.totalAmountSpent = totalAmountSpent;
         this.totalTrips = totalTrips;
+        this.totalOutstandingAmount = totalOutstandingAmount;
+        this.totalOutstandingBills = totalOutstandingBills;
         this.tripBills = tripBills;
     }
 
@@ -52,6 +57,22 @@ public class BillingHistoryResponse {
 
     public void setTotalTrips(Integer totalTrips) {
         this.totalTrips = totalTrips;
+    }
+
+    public Double getTotalOutstandingAmount() {
+        return totalOutstandingAmount;
+    }
+
+    public void setTotalOutstandingAmount(Double totalOutstandingAmount) {
+        this.totalOutstandingAmount = totalOutstandingAmount;
+    }
+
+    public Integer getTotalOutstandingBills() {
+        return totalOutstandingBills;
+    }
+
+    public void setTotalOutstandingBills(Integer totalOutstandingBills) {
+        this.totalOutstandingBills = totalOutstandingBills;
     }
 
     public List<TripBillDTO> getTripBills() {

@@ -1,12 +1,20 @@
 package com.soen343.tbd.application.service;
 
-import com.soen343.tbd.application.dto.BillingHistoryResponse;
+import com.soen343.tbd.application.dto.billing.UserBillingHistoryResponse;
+import com.soen343.tbd.application.dto.billing.UserPaymentRequest;
 import com.soen343.tbd.domain.model.Bill;
+import com.soen343.tbd.domain.model.Station;
 import com.soen343.tbd.domain.model.Trip;
+import com.soen343.tbd.domain.model.enums.BillStatus;
+import com.soen343.tbd.domain.model.ids.BillId;
 import com.soen343.tbd.domain.model.user.User;
 import com.soen343.tbd.domain.repository.BillRepository;
+import com.soen343.tbd.domain.repository.StationRepository;
 import com.soen343.tbd.domain.repository.TripRepository;
 import com.soen343.tbd.domain.repository.UserRepository;
+import com.soen343.tbd.infrastructure.payment.PaymentGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,29 +25,102 @@ import java.util.stream.Collectors;
 @Service
 public class BillingService {
 
+    private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
+
     private final BillRepository billRepository;
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
+    private final StationRepository stationRepository;
+    private final PaymentGateway paymentGateway;
 
     public BillingService(BillRepository billRepository, TripRepository tripRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository, StationRepository stationRepository,
+                          PaymentGateway paymentGateway) {
         this.billRepository = billRepository;
         this.tripRepository = tripRepository;
         this.userRepository = userRepository;
+        this.stationRepository = stationRepository;
+        this.paymentGateway = paymentGateway;
     }
 
     @Transactional(readOnly = true)
-    public BillingHistoryResponse getAllBillingHistoryForUser(String userEmail) {
+    public UserBillingHistoryResponse getAllBillingHistoryForUser(String userEmail) {
+        logger.info("Starting process to get bill history for user: {}...", userEmail);
+        logger.info("Fetching billing history for user: {}", userEmail);
+
         // Fetch the user by email
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("No user found with email: " + userEmail));
 
         // Fetch all the trips associated with the user
         List<Trip> trips = tripRepository.findAllByUserId(user.getUserId());
+        logger.debug("Found {} trips for user: {}", trips.size(), userEmail);
 
         // Fetch all the bills associated with the user
         List<Bill> bills = billRepository.findAllByUserId(user.getUserId());
+        logger.debug("Found {} bills for user: {}", bills.size(), userEmail);
 
+        logger.info("Successfully fetched billing history for user: {}", userEmail);
+        return createBillingHistoryResponse(trips, bills, user);
+    }
+
+    /**
+     * Process payment for a bill
+     */
+    @Transactional
+    public boolean processPayment(UserPaymentRequest paymentRequest, String userEmail) {
+        logger.info("Starting payment process for bill ID: {} by user: {}...", paymentRequest.billId(), userEmail);
+
+        // Fetch the bill
+        Bill bill = billRepository.findById(new BillId(paymentRequest.billId()))
+                .orElseThrow(() -> {
+                    logger.error("Bill not found with ID: {}", paymentRequest.billId());
+                    return new RuntimeException("Bill not found with ID: " + paymentRequest.billId());
+                });
+
+        // Verify the bill is still pending
+        if (bill.getStatus() == BillStatus.PAID) {
+            logger.warn("Attempted to pay already paid bill. Bill ID: {}", paymentRequest.billId());
+            throw new RuntimeException("Bill has already been paid");
+        }
+
+        // Fetch the user
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> {
+                    logger.error("User not found with email: {}", userEmail);
+                    return new RuntimeException("User not found with email: " + userEmail);
+                });
+
+        // Verify the bill belongs to this user
+        if (!bill.getUserId().equals(user.getUserId())) {
+            logger.error("User {} attempted to pay bill {} which belongs to user {}",
+                    userEmail, paymentRequest.billId(), bill.getUserId());
+            throw new RuntimeException("User does not have permission to pay this bill");
+        }
+
+        // Process payment through the payment gateway (which will validate payment information)
+        logger.debug("Calling payment gateway for bill ID: {}, amount: ${}", paymentRequest.billId(), bill.getCost());
+        boolean paymentSuccess = paymentGateway.processPayment(
+                paymentRequest,
+                user,
+                bill.getCost()
+        );
+
+        if (!paymentSuccess) {
+            logger.error("Payment processing failed for bill ID: {}", paymentRequest.billId());
+            throw new RuntimeException("Payment processing failed");
+        }
+
+        // Update bill status to PAID
+        bill.setStatus(BillStatus.PAID);
+        billRepository.save(bill);
+
+        logger.info("Payment processed successfully! Bill ID: {} updated to PAID status", paymentRequest.billId());
+
+        return true;
+    }
+
+    private UserBillingHistoryResponse createBillingHistoryResponse(List<Trip> trips, List<Bill> bills, User user) {
         // Create a map of bills by trip ID for easy lookup
         Map<Long, Bill> billByTripId = bills.stream()
                 .collect(Collectors.toMap(
@@ -48,17 +129,18 @@ public class BillingService {
                 ));
 
         // Build the list of TripBillDTO objects
-        List<BillingHistoryResponse.TripBillDTO> tripBills = trips.stream()
+        List<UserBillingHistoryResponse.TripBillDTO> tripBills = trips.stream()
                 .map(trip -> {
                     Bill bill = billByTripId.get(trip.getTripId().value());
 
                     // Get station names (handle null for trips in progress)
-                    String startStationName = trip.getStartStationId() != null ?
-                            "Station " + trip.getStartStationId().value() : "Unknown";
-                    String endStationName = trip.getEndStationId() != null ?
-                            "Station " + trip.getEndStationId().value() : "In Progress";
+                    Station startStation = stationRepository.findById(trip.getStartStationId()).orElse(null);
+                    Station endStation = stationRepository.findById(trip.getEndStationId()).orElse(null);
 
-                    return new BillingHistoryResponse.TripBillDTO(
+                    String startStationName = startStation != null ? startStation.getStationName() : "Unknown";
+                    String endStationName = endStation != null ? endStation.getStationName() : "In Progress";
+
+                    return new UserBillingHistoryResponse.TripBillDTO(
                             trip.getTripId().value(),
                             trip.getBikeId().value(),
                             startStationName,
@@ -81,12 +163,25 @@ public class BillingService {
                 .mapToDouble(Bill::getCost)
                 .sum();
 
+        // Calculate outstanding bills (PENDING status only, PAID bills are already settled)
+        List<Bill> outstandingBills = bills.stream()
+                .filter(bill -> "PENDING".equals(bill.getStatus().name()))
+                .collect(Collectors.toList());
+
+        Double totalOutstandingAmount = outstandingBills.stream()
+                .mapToDouble(Bill::getCost)
+                .sum();
+
+        Integer totalOutstandingBills = outstandingBills.size();
+
         // Build and return the response
-        return new BillingHistoryResponse(
+        return new UserBillingHistoryResponse(
                 user.getEmail(),
                 user.getFullName(),
                 totalAmountSpent,
                 trips.size(),
+                totalOutstandingAmount,
+                totalOutstandingBills,
                 tripBills
         );
     }
