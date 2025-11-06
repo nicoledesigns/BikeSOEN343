@@ -37,7 +37,10 @@ public class AuthController {
             // Fetch user details
             User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
             String fullName = user.getFullName();
-            LoginResponse response = new LoginResponse(token, loginRequest.getEmail(), fullName, user.getRole());
+            String username = user.getUsername();
+
+            LoginResponse response = new LoginResponse(token, loginRequest.getEmail(), fullName, user.getRole(), username);
+
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.ok(false);

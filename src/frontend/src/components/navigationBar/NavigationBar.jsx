@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './NavigationBar.css';
 
-function NavigationBar({ fullName, role, handleLogout }) {
+function NavigationBar({ fullName, role, handleLogout, handleViewHistory }) {
     const [isOpen, setIsOpen] = useState(false);
     const sidebarRef = useRef(null);
     const initials = fullName
@@ -55,7 +55,7 @@ function NavigationBar({ fullName, role, handleLogout }) {
                             <i className="fas fa-file-invoice-dollar"></i>
                             My Bills
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-item" onClick={handleViewHistory}>
                             <i className="fas fa-history"></i>
                             History
                         </li>
