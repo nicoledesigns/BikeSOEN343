@@ -3,6 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import StationMarker from "./stationMarker/StationMarker";
 import { useEffect, useState } from "react";
+import Legend from "./legend/Legend";
+import "./MapLegend.css"
 
 // Custom markers, for dynamic coloring
 const redDivIcon = L.divIcon({
@@ -94,6 +96,7 @@ const Map = ({
   };
 
   return (
+    <div style={style}>
     <MapContainer center={center} zoom={11} style={style}>
       {/* Maps generally use tiles so they dont have to render the whole world and only what fits in the map display, hence this import by Leaflet for rendering*/}
       <TileLayer
@@ -142,6 +145,12 @@ const Map = ({
           );
         })};
     </MapContainer>
+
+    {/*Legend component, styled bottom left*/}
+    <div className="map-legend-overlay">
+        <Legend />
+      </div>"
+      </div>
   );
 };
 
