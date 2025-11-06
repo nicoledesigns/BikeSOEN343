@@ -77,17 +77,14 @@ public class HistoryController {
                 }
             }
 
-            // Get bill object safely
-            Bill bill = null;
+            // Get bill cost safely
+            Double billCost = null;
             if (trip.getBillId() != null) {
-                Optional<Bill> billOptional = historyService.getBillById(trip.getBillId().value());
-                if (billOptional.isPresent()) {
-                    bill = billOptional.get();
+                Optional<Bill> bill = historyService.getBillById(trip.getBillId().value());
+                if (bill.isPresent()) {
+                    billCost = bill.get().getCost();
                 }
             }
-
-            // Get pricing info from trip's pricing strategy
-
 
             // Build response DTO with trip details
             TripDetailsDTO response = new TripDetailsDTO(
@@ -101,7 +98,7 @@ public class HistoryController {
                     trip.getStatus() != null ? trip.getStatus().toString() : null,
                     trip.getBillId() != null ? trip.getBillId().value() : null,
                     bikeType,
-                    bill,
+                    billCost,
                     trip.getPricingStrategy() != null ? trip.getPricingStrategy().getBaseFee() : null,
                     trip.getPricingStrategy() != null ? trip.getPricingStrategy().getPerMinuteRate() : null
             );
