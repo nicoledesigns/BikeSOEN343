@@ -42,7 +42,7 @@ public class StationPublisher implements StationSubject {
 
     @Override
     public void notifyMaintenanceChange(MaintenanceUpdateDTO maintenanceUpdate) {
-        logger.debug("Notifying {} observers about maintenance change for bike {}", 
+        logger.debug("Notifying {} observers about maintenance change for bike {}",
             observers.size(), maintenanceUpdate.getBikeId());
         for (StationObserver observer : observers) {
             try {

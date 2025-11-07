@@ -143,6 +143,25 @@ const Auth = () => {
               <h4>{isLogin ? "Login" : "Sign Up"}</h4>
             </div>
             <div className="card-body">
+
+              {/* Enter as Guest Button */}
+              <div style={{ textAlign: "center", marginBottom: "15px" }}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/pricing")}
+                  style={{
+                    padding: "10px 20px",
+                    background: "#3FC1C9",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "600"
+                  }}
+                >
+                  Enter as Guest
+                </button>
+              </div>
               {error && <div className="error-message">{error}</div>}
               <form onSubmit={handleSubmit} className="auth-form">
                 {!isLogin && (

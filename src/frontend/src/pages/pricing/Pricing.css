@@ -1,0 +1,196 @@
+/* Container for the entire page */
+.guest-home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+  }
+  
+  .info-section p {
+    margin-bottom: 2rem; /* more space between paragraphs */
+    line-height: 1.8;
+    font-size: 1rem;
+    color: #444;
+  }
+  
+  .info-section p strong {
+    color: #3fc1c9;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  /* Back button styling */
+  .guest-home-container button {
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .guest-home-container button:hover {
+    background-color: #5750d1;
+  }
+  
+  /* Section headings */
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    color: #222;
+  }
+  
+  h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+  
+  h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Pricing section */
+  .pricing-section {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .pricing-section p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Cards container */
+  .pricing-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  
+  /* Individual card styling */
+  .pricing-card {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    width: 260px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+  
+  .pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Card headings and colors */
+  .pricing-card h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+  }
+  
+  .pricing-card p {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  
+  /* List styling inside card */
+  .pricing-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left;
+  }
+  
+  .pricing-card ul li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  /* Example trip cost */
+  .pricing-card strong {
+    color: #222;
+  }
+  
+  /* About section */
+  .guest-home-container > div > div:nth-child(2) {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  /* Ordered list styling in How it works */
+  ol {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    color: #555;
+  }
+  
+  ol li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Small responsive tweaks */
+  @media (max-width: 768px) {
+    .pricing-cards {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .guest-home-container > div {
+      flex-direction: column;
+    }
+  }
+  
+
+  /* GuestInfoBubble */
+
+.info-bubble-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 999; /* above map */
+  }
+  
+  .info-bubble-button {
+    width: 40px;
+    height: 40px;
+    background-color: #6c63ff;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  
+  .info-bubble-button:hover {
+    transform: scale(1.1);
+  }
+  
+  .info-bubble-panel {
+    margin-top: 10px;
+    width: 280px;
+    max-height: 300px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    padding: 1rem;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  

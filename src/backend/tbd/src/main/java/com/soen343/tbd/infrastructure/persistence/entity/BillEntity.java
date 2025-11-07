@@ -13,18 +13,27 @@ public class BillEntity {
     @Column(name = "cost")
     private Double cost;
 
-    @OneToOne
+    // Direct ID columns to avoid lazy loading
+    @Column(name = "trip_id", insertable = false, updatable = false)
+    private Long tripId;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
+
+    @Column(name = "status")
+    private String status;
+
+    // Relationship entities (lazy loaded only when explicitly accessed)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     private TripEntity trip;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    
-    /* 
-    -----------------------
-      GETTERS AND SETTERS 
+    /*
+      GETTERS AND SETTERS
     -----------------------
     */
 
@@ -44,6 +53,33 @@ public class BillEntity {
         this.cost = cost;
     }
 
+
+    // Direct ID getters (no lazy loading)
+    public Long getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(Long tripId) {
+        this.tripId = tripId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Relationship entity getters (may trigger lazy loading)
     public TripEntity getTrip() {
         return trip;
     }

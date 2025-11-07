@@ -62,7 +62,7 @@ function StationMarker({
         setActiveBikeMaintenanceRemoval(null);
     };
 
-    
+
     return (
         <Marker
         key={station.stationId}
@@ -126,8 +126,8 @@ function StationMarker({
                                         : "bike-box-empty"
                                 } ${selectedDock?.dockId === dock.dockId ? "bike-box-selected" : ""}`}
                                     
-                                onClick={() => setSelectedDock(dock)}
-                            >
+                                onClick={userRole !== "GUEST" ? () => setSelectedDock(dock) : undefined}
+                                >
                             {hasBike ? <span style={{ fontSize: "1.2em" }}>🚲</span> : ""}
                             </div>
                         );
@@ -140,12 +140,12 @@ function StationMarker({
                             <div>
                                 <h4>Dock {selectedDock.dockId}</h4>
 
-                                {/* If out of service, show warning instead of bike info (But operators should see the bike info, so they 
+                                {/* If out of service, show warning instead of bike info (But operators should see the bike info, so they
                                 can move a bike from an OOS dock) */}
                                 {selectedDock.dockStatus === "OUT_OF_SERVICE" && (
                                     <p style={{ color: "red" }}>This dock is currently out of service.</p>
                                 )}
-                                 
+
                                 {(selectedDock.dockStatus !== "OUT_OF_SERVICE"  || userRole === "OPERATOR") && (
                                     <p style={{ margin: "0.3em" }}>
                                         Dock Status: {selectedDock.dockStatus}
@@ -161,7 +161,7 @@ function StationMarker({
                             
 
                             {/* Rent button */}
-                            {selectedDock.bike && !activeBikeRental.hasOngoingRental && userRole !== "OPERATOR" && 
+                            {selectedDock.bike && !activeBikeRental.hasOngoingRental && userRole !== "OPERATOR" &&
                             selectedDock.dockStatus !== "OUT_OF_SERVICE" && (
                             // Allow rent only if:
                             // - The bike is not reserved
@@ -182,7 +182,7 @@ function StationMarker({
                             station.stationStatus === "ACTIVE" && selectedDock.dockStatus !== "OUT_OF_SERVICE" &&(
                                 <button
                                 className="button-19-return"
-                                onClick={() => onClickShowConfirmReturn(selectedDock, activeBikeRental.bikeId, station)}
+                                onClick={() => onClickShowConfirmReturn(selectedDock, activeBikeRental?.bikeId, station)}
                                 >
                                     Return Your Bike
                                 </button>
@@ -250,7 +250,7 @@ function StationMarker({
 
 
                             {/* operator rebalance bike button */}
-                            {userRole === "OPERATOR" && rebalanceSource.bikeId && selectedDock.dockId !== rebalanceSource.sourceDockId && 
+                            {userRole === "OPERATOR" && rebalanceSource.bikeId && selectedDock.dockId !== rebalanceSource.sourceDockId &&
                              !selectedDock.bike && selectedDock.dockStatus !== "OUT_OF_SERVICE" && (
                                 <button
                                     className="button-19-return"

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 public interface JpaTripRepository extends JpaRepository<TripEntity, Long> {
     Optional<TripEntity> findByUser_UserIdAndStatus(Long userId, TripStatus status);
 
+    List<TripEntity> findAllByUser_UserId(Long userId);
+
     Optional<TripEntity> findByTripIdAndUser_Email(Long tripId, String email);
 
     List<TripEntity> findByUser_Email(String email);
