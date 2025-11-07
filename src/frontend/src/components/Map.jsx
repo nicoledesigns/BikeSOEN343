@@ -149,7 +149,7 @@ const Map = ({
     {/*Legend component, styled bottom left*/}
     <div className="map-legend-overlay">
         <Legend />
-      </div>"
+      </div>
       </div>
   );
 };

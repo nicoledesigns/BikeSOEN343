@@ -11,7 +11,7 @@ function EventPopup({ message, onCancel }) {
       <div className="modal-box">
         <p>{message}</p>
         <div className="modal-buttons">
-          <button className="close-btn" onClick={onCancel}>Close</button>
+          <button className="close-btn-1" onClick={onCancel}>Close</button>
         </div>
       </div>
     </>

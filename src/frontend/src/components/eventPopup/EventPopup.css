@@ -38,7 +38,7 @@
 }
 
 /* Close button */
-.modal-buttons .close-btn {
+.modal-buttons .close-btn-1 {
   padding: 8px 20px;
   cursor: pointer;
   background: grey;
@@ -47,6 +47,6 @@
   border-radius: 4px;
 }
 
-.close-btn:hover {
+.close-btn-1:hover {
   background: darkgray;
 }

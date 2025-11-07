@@ -53,28 +53,28 @@ function NavigationBar({ fullName, role, handleLogout, handleBillingClick, handl
                         </li>
 
                         {role === "RIDER" && (
-                            <li className="nav-item">
+                            <li className={`nav-item ${activePage === 'billing' ? 'active' : ''}`} onClick={handleBillingClick}>
                                 <i className="fas fa-file-invoice-dollar"></i>
                                 My Bills
                             </li>
                         )}
 
                         {role === "OPERATOR" && (
-                            <li className="nav-item">
+                            <li className={`nav-item ${activePage === 'billing' ? 'active' : ''}`} onClick={handleBillingClick}>
                                 <i className="fas fa-file-invoice-dollar"></i>
                                 All Bills
                             </li>
                         )}
 
                         {role === "RIDER" && (
-                            <li className="nav-item" onClick={handleViewHistory}>
+                            <li className={`nav-item ${activePage === 'history' ? 'active' : ''}`} onClick={handleViewHistory}>
                                 <i className="fas fa-history"></i>
                                 History
                             </li>
                         )}    
                             
                         {role === "OPERATOR" && (
-                            <li className="nav-item" onClick={handleViewHistory}>
+                            <li className={`nav-item ${activePage === 'history' ? 'active' : ''}`} onClick={handleViewHistory}>
                                 <i className="fas fa-history"></i>
                                 All Trip Histories
                             </li>
