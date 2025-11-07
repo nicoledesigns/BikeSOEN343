@@ -13,22 +13,35 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+
     public void addUser(User user) {
         userRepository.save(user);
     }
-    
-    public Boolean loginUser(LoginRequest loginRequest){
+
+    public Boolean loginUser(LoginRequest loginRequest) {
         for (User user : userRepository.findAll()) {
-            if (user.getEmail().equals(loginRequest.getEmail()) && user.getPassword().equals(loginRequest.getPassword())) {
+            if (user.getEmail().equals(loginRequest.getEmail())
+                    && user.getPassword().equals(loginRequest.getPassword())) {
                 return true;
             }
         }
         return false;
     }
 
-    public User getUserWithEmail(String userEmail){
+    public User getUserWithEmail(String userEmail) {
         return userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new RuntimeException("No user found with email: " + userEmail));
+                .orElseThrow(() -> new RuntimeException("No user found with email: " + userEmail));
+    }
+
+    public String getUserEmail(UserId userId) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId.value()));
+            ;
+            return user.getEmail();
+        } catch (Exception e) {
+            return "Unknown User";
+        }
     }
 
     public User getUserById(UserId userId){

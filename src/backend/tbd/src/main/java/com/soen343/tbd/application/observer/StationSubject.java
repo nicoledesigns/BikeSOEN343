@@ -2,6 +2,8 @@ package com.soen343.tbd.application.observer;
 
 import com.soen343.tbd.application.dto.MaintenanceUpdateDTO;
 
+import com.soen343.tbd.application.dto.EventDTO;
+
 // Observer package in application layer because it's part of app's business logic
 
 import com.soen343.tbd.application.dto.StationDetailsDTO;
@@ -16,4 +18,6 @@ public interface StationSubject {
     void notifyObservers(StationDetailsDTO station); // Broadcast updates to all subscribers
 
     default void notifyMaintenanceChange(MaintenanceUpdateDTO maintenanceUpdate){}; // Broadcast maintenance updates optionally
+
+    void notifyOperatorEvent(EventDTO event); // Broadcast updates only to operators
 }

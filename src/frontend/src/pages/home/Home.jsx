@@ -8,59 +8,61 @@ import NavigationBar from '../../components/navigationBar/NavigationBar';
 import PopupManager from '../../components/PopupManager';
 import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner';
 import MaintenanceTracker from '../../components/maintenanceTracker/MaintenanceTracker';
+import OperatorConsole from "../../components/operatorConsole/OperatorConsole";
 import './Home.css';
 
 const Home = () => {
     const navigate = useNavigate();
 
-    const {
-        // Loading states
-        isLoading,
-        loadingMessage,
-        // Data
-        fullName,
-        role,
-        stations,
-        activeReservation,
-        timeLeft,
-        activeBikeRental,
-        bikesUnderMaintenance,
-        activeBikeMaintenanceRemoval,
+  const {
+    // Loading states
+    isLoading,
+    loadingMessage,
+    // Data
+    fullName,
+    role,
+    stations,
+    activeReservation,
+    timeLeft,
+    activeBikeRental,
+    bikesUnderMaintenance,
+    activeBikeMaintenanceRemoval,
         tripSummaryData,
-        // popups & control
-        confirmRental,
-        rentalSuccessPopup,
-        confirmReturn,
-        returnSuccessPopup,
-        confirmReservation,
-        reservationSuccessPopup,
-        showCancelReservationPopup,
-        // actions
-        handleLogout,
-        handleViewHistory,
-        fetchStations,
-        onClickShowConfirmRental,
-        onClickShowConfirmReturn,
-        handleShowReservation,
-        onClickShowCancelReservation,
-        toggleStationStatus,
-        userRole,
-        rebalanceBike,
-        handleConfirmReservation,
-        setConfirmReservation,
-        setReservationSuccessPopup,
-        handleCancelActiveReservation,
-        setShowCancelReservationPopup,
-        handleConfirmRental,
-        handleCancelConfirmationRental,
-        handleCancelEventRental,
-        handleConfirmReturn,
-        handleCancelConfirmationReturn,
-        handleCancelEventReturn,
-        handleBikeMaintain,
-        handleRemoveFromMaintenance,
-        setActiveBikeMaintenanceRemoval
-    } = useHomeLogic();
+    // popups & control
+    confirmRental,
+    rentalSuccessPopup,
+    confirmReturn,
+    returnSuccessPopup,
+    confirmReservation,
+    reservationSuccessPopup,
+    showCancelReservationPopup,
+    // actions
+    handleLogout,
+    handleViewHistory,
+    fetchStations,
+    onClickShowConfirmRental,
+    onClickShowConfirmReturn,
+    handleShowReservation,
+    onClickShowCancelReservation,
+    toggleStationStatus,
+    userRole,
+    rebalanceBike,
+    handleConfirmReservation,
+    setConfirmReservation,
+    setReservationSuccessPopup,
+    handleCancelActiveReservation,
+    setShowCancelReservationPopup,
+    handleConfirmRental,
+    handleCancelConfirmationRental,
+    handleCancelEventRental,
+    handleConfirmReturn,
+    handleCancelConfirmationReturn,
+    handleCancelEventReturn,
+    operatorEvents, // for operator console,
+    handleBikeMaintain,
+    handleRemoveFromMaintenance,
+    setActiveBikeMaintenanceRemoval
+  } = useHomeLogic();
 
     const mapProps = {
         bikesUnderMaintenance,
@@ -132,23 +134,19 @@ const Home = () => {
                 activePage="home"
             />
 
-            <div className="content-wrapper">
-                <div className="welcome-section">
-                    <h1 className="welcome-title">
-                        {fullName ? (
-                            `Welcome back, ${fullName.split(' ')[0]}!`
-                        ) : (
-                            'Welcome to BikeShare'
-                        )}
-                    </h1>
-                    <p className="welcome-subtitle">
-                        {role === 'OPERATOR' ? (
-                            'Manage stations and monitor bike rentals'
-                        ) : (
-                            'Ready to start your journey? Find and reserve a bike near you.'
-                        )}
-                    </p>
-                </div>
+      <div className="content-wrapper">
+        <div className="welcome-section">
+          <h1 className="welcome-title">
+            {fullName
+              ? `Welcome back, ${fullName.split(" ")[0]}!`
+              : "Welcome to BikeShare"}
+          </h1>
+          <p className="welcome-subtitle">
+            {role === "OPERATOR"
+              ? "Manage stations and monitor bike rentals"
+              : "Ready to start your journey? Find and reserve a bike near you."}
+          </p>
+        </div>
 
                 <div className="dashboard-grid">
                     <div className="map-column">
@@ -172,6 +170,14 @@ const Home = () => {
                             />
                         )}
                     </div>
+                    
+                    {role === "OPERATOR" && (
+                      <div className="sidebar-container">
+                        <div className="console-section">
+                          <OperatorConsole operatorEvents={operatorEvents} />
+                        </div>
+                      </div>
+                    )}
 
                     {role === 'RIDER' && (
                         <div className="sidebar-container">

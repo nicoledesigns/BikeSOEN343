@@ -7,7 +7,10 @@ export default function useHomeLogic() {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [retryCount, setRetryCount] = useState(0);
+    const [operatorRetryCount, setOperatorRetryCount] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
+    const [operatorIsConnected, setOperatorIsConnected] = useState(false);
+    const [operatorEvents, setOperatorEvents] = useState([]) // for operator console
 
     // Constants for SSE reconnection
     const MAX_RETRIES = 5;
@@ -79,99 +82,179 @@ export default function useHomeLogic() {
         };
         loadInitialData();
     }, []);
-    
+
+    // SSE connection setup for Operator with auto-reconnect
+    useEffect(() => {
+        if (role === 'OPERATOR') {
+            let operatorEventSource = null;
+            let operatorRetryTimer = null;
+
+            const connect = () => {
+                operatorEventSource = new EventSource('http://localhost:8080/api/events/subscribe', {
+                    withCredentials: true
+                });
+            
+
+                // Connection established
+                operatorEventSource.onopen = () => {
+                    console.log('Operator SSE connection established');
+                    setOperatorIsConnected(true);
+                    setOperatorRetryCount(0);
+                };
+
+                // Handle general messages
+                operatorEventSource.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    console.log('Operator SSE update received:', data);
+                };
+
+                // Handle operator events
+                operatorEventSource.addEventListener('operator-event', (event) => {
+                    const eventData = JSON.parse(event.data);
+                    console.log('OPERATOR EVENT RECEIVED:', eventData);
+                    
+                    // Store operator events for the console
+                    setOperatorEvents(prev => [eventData, ...prev]);
+                });
+
+                // Handle connection events
+                operatorEventSource.addEventListener('connected', (event) => {
+                    console.log('Operator SSE connected event:', event.data);
+                });
+
+                // Error handling with auto-reconnect
+                operatorEventSource.onerror = () => {
+                    console.error('SSE connection error');
+                    operatorEventSource.close();
+                    setIsConnected(false);
+
+                    if (retryCount < MAX_RETRIES) {
+                        const timeout = RETRY_DELAY * Math.pow(2, operatorRetryCount);
+                        console.log(`Retrying SSE in ${timeout}ms`);
+                        operatorRetryTimer = setTimeout(() => {
+                            setRetryCount(prev => prev + 1);
+                            connect(); // re-establish manually
+                        }, timeout);
+                    }
+                };
+            };
+
+            connect();
+
+            // Cleanup on component unmount or before re-running effect
+            return () => {
+                console.log('Cleaning up Operator SSE connection');
+                try { operatorEventSource.close(); } catch (e) { /* ignore */ }
+                if (operatorRetryTimer) {
+                    clearTimeout(operatorRetryTimer);
+                    operatorRetryTimer = null;
+                }
+            };
+        }
+    }, []);
+
     // SSE connection setup with auto-reconnect
     useEffect(() => {
+        let eventSource = null;
         let retryTimer = null;
-        const eventSource = new EventSource('http://localhost:8080/api/stations/subscribe', {
-            withCredentials: true
-        });
 
-        // Connection established
-        eventSource.onopen = () => {
-            console.log('SSE connection established');
-            setIsConnected(true);
-            setRetryCount(0);
-        };
+        const connect = () => {
+            eventSource = new EventSource('http://localhost:8080/api/stations/subscribe', {
+                withCredentials: true
+            });
 
-        // Handle general messages
-        eventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('SSE update received:', data);
-        };
+            // Connection established
+            eventSource.onopen = () => {
+                console.log('SSE connection established');
+                setIsConnected(true);
+                setRetryCount(0);
+            };
 
-        // Handle station-level updates
-        eventSource.addEventListener('station-update', (event) => {
-            const stationData = JSON.parse(event.data);
-            console.log('Station update received:', stationData);
-            setStations(currentStations => 
-                currentStations.map(station => 
-                    station.stationId === stationData.stationId ? stationData : station
-                )
-            );
-        });
+            // Handle general messages
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('SSE update received:', data);
+            };
 
-        // Handle dock-level updates
-        eventSource.addEventListener('dock-update', (event) => {
-            const dockUpdate = JSON.parse(event.data);
-            console.log('Dock update received:', dockUpdate);
-            setStations(currentStations => 
-                currentStations.map(station => {
-                    if (station.stationId === dockUpdate.stationId) {
-                        return {
-                            ...station,
-                            docks: station.docks.map(dock => 
-                                dock.dockId === dockUpdate.dock.dockId ? dockUpdate.dock : dock
-                            )
-                        };
-                    }
-                    return station;
-                })
-            );
-        });
+            // Handle station-level updates
+            eventSource.addEventListener('station-update', (event) => {
+                const stationData = JSON.parse(event.data);
+                console.log('Station update received:', stationData);
+                setStations(currentStations => 
+                    currentStations.map(station => 
+                        station.stationId === stationData.stationId ? stationData : station
+                    )
+                );
+            });
 
-        // Handle maintenance-specific updates
-        eventSource.addEventListener('maintenance-update', (event) => {
-            const maintenanceData = JSON.parse(event.data);
-            console.log('Maintenance update received:', maintenanceData);
+            // Handle dock-level updates
+            eventSource.addEventListener('dock-update', (event) => {
+                const dockUpdate = JSON.parse(event.data);
+                console.log('Dock update received:', dockUpdate);
+                setStations(currentStations => 
+                    currentStations.map(station => {
+                        if (station.stationId === dockUpdate.stationId) {
+                            return {
+                                ...station,
+                                docks: station.docks.map(dock => 
+                                    dock.dockId === dockUpdate.dock.dockId ? dockUpdate.dock : dock
+                                )
+                            };
+                        }
+                        return station;
+                    })
+                );
+            });
 
-            setBikesUnderMaintenance(currentBikes => {
-                if (maintenanceData.action === 'ADDED') {
-                    // Add bike to maintenance list if not already there
-                    const isAlreadyInList = currentBikes.some(b => b.bikeId === maintenanceData.bikeId);
-                    if (!isAlreadyInList) {
-                        console.log('DEBUG: Adding bike to maintenance list:', maintenanceData.bikeId);
-                        return [...currentBikes, {
-                            bikeId: maintenanceData.bikeId,
-                            status: maintenanceData.bikeStatus
-                        }];
+            // Handle maintenance-specific updates
+            eventSource.addEventListener('maintenance-update', (event) => {
+                const maintenanceData = JSON.parse(event.data);
+                console.log('Maintenance update received:', maintenanceData);
+                
+                setBikesUnderMaintenance(currentBikes => {
+                    if (maintenanceData.action === 'ADDED') {
+                        // Add bike to maintenance list if not already there
+                        const isAlreadyInList = currentBikes.some(b => b.bikeId === maintenanceData.bikeId);
+                        if (!isAlreadyInList) {
+                            console.log('DEBUG: Adding bike to maintenance list:', maintenanceData.bikeId);
+                            return [...currentBikes, {
+                                bikeId: maintenanceData.bikeId,
+                                status: maintenanceData.bikeStatus
+                            }];
+                        }
+                        return currentBikes;
+                    } else if (maintenanceData.action === 'REMOVED') {
+                        console.log('DEBUG: Removing bike from maintenance list:', maintenanceData.bikeId);
+                        // Remove bike from maintenance list
+                        return currentBikes.filter(b => b.bikeId !== maintenanceData.bikeId);
                     }
                     return currentBikes;
-                } else if (maintenanceData.action === 'REMOVED') {
-                    console.log('DEBUG: Removing bike from maintenance list:', maintenanceData.bikeId);
-                    // Remove bike from maintenance list
-                    return currentBikes.filter(b => b.bikeId !== maintenanceData.bikeId);
-                }
-                return currentBikes;
+                });
             });
-        });
 
-        // Error handling with auto-reconnect
-        eventSource.onerror = (error) => {
-            console.error('SSE connection error:', error);
-            try { eventSource.close(); } catch (e) { /* ignore */ }
-            setIsConnected(false);
+            // Handle connection events
+            eventSource.addEventListener('connected', (event) => {
+                console.log('SSE connected event:', event.data);
+            });
 
-            if (retryCount < MAX_RETRIES) {
-                const timeout = RETRY_DELAY * Math.pow(2, retryCount);
-                console.log(`Retrying SSE connection in ${timeout}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`);
-                retryTimer = setTimeout(() => {
-                    setRetryCount(prev => prev + 1);
-                }, timeout);
-            } else {
-                console.error('Max SSE retry attempts reached');
-            }
+            // Error handling with auto-reconnect
+            eventSource.onerror = () => {
+                console.error('SSE connection error');
+                eventSource.close();
+                setIsConnected(false);
+
+                if (retryCount < MAX_RETRIES) {
+                    const timeout = RETRY_DELAY * Math.pow(2, retryCount);
+                    console.log(`Retrying SSE in ${timeout}ms`);
+                    retryTimer = setTimeout(() => {
+                        setRetryCount(prev => prev + 1);
+                        connect(); // re-establish manually
+                    }, timeout);
+                }
+            };
         };
+
+        connect();
 
         // Cleanup on component unmount or before re-running effect
         return () => {
@@ -182,7 +265,7 @@ export default function useHomeLogic() {
                 retryTimer = null;
             }
         };
-    }, [retryCount]);
+    }, []);
 
     // Reservation timer effect
     useEffect(() => {
@@ -241,6 +324,41 @@ export default function useHomeLogic() {
             }
         });
     };
+
+    // operator events sse
+    // useEffect (() => {
+    //     if (role !== 'OPERATOR') {console.log("Not an operator, returning."); return;} // only for operators
+        
+    //     let operatorEventSource = null;
+
+    //     try {
+    //         operatorEventSource = new EventSource('http://localhost:8080/api/events/subscribe', {
+    //             withCredentials:true
+    //         });
+
+    //         operatorEventSource.onopen = () => {
+    //             console.log("Operator events SSE connection established.");
+    //         };
+
+    //         operatorEventSource.addEventListener('operator-event', (event) => {
+    //             const eventData = JSON.parse(event.data);
+    //             console.log('OPERATOR EVENT:', eventData);
+
+    //             // for now only keep last 25 events
+    //             setOperatorEvents(prev => [eventData, ...prev].slice(0, 50));
+    //         })
+
+    //         operatorEventSource.onerror = (e) => {
+    //             console.log("Operator events error:");
+    //         };
+
+    //     } catch (e) {console.error("Failed to establish operator events SSE connection.");}
+
+    //     return () => {
+    //         if (operatorEventSource)
+    //             operatorEventSource.close();
+    //     };
+    // }, [role]);
 
     const rebalanceBike = async (rebalanceData) => {
         await withLoading('Rebalancing bike...', async () => {
@@ -583,6 +701,7 @@ export default function useHomeLogic() {
         handleCancelEventReturn,
         handleBikeMaintain,
         handleRemoveFromMaintenance,
-        setActiveBikeMaintenanceRemoval
+        setActiveBikeMaintenanceRemoval,
+        operatorEvents
     };
 }
