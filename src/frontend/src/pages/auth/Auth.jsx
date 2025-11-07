@@ -144,14 +144,14 @@ const Auth = () => {
             </div>
             <div className="card-body">
 
-              {/* Enter as Guest Button */}
+              {/* Back to Landing Page Button */}
               <div style={{ textAlign: "center", marginBottom: "15px" }}>
                 <button
                   type="button"
-                  onClick={() => navigate("/pricing")}
+                  onClick={() => navigate("/landing")}
                   style={{
                     padding: "10px 20px",
-                    background: "#3FC1C9",
+                    background: "#3f7fc9",
                     color: "#fff",
                     border: "none",
                     borderRadius: "8px",
@@ -159,7 +159,7 @@ const Auth = () => {
                     fontWeight: "600"
                   }}
                 >
-                  Enter as Guest
+                  Back to Landing Page
                 </button>
               </div>
               {error && <div className="error-message">{error}</div>}

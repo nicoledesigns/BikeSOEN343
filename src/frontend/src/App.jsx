@@ -6,15 +6,25 @@ import History from './pages/history/History.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Pricing from './pages/pricing/Pricing.jsx';
+import Landing from './pages/landing/Landing.jsx';
 
 
 function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/pricing" element={<Pricing />} />
+        {/* Landing page - shown on startup */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/landing" element={<Landing />} />
+
+        {/* Pricing page - only pricing cards */}
+        <Route path="/pricing" element={<Pricing />} />
+
+        {/* Auth routes */}
         <Route path="/login" element={<Auth />} />
         <Route path="/auth" element={<Auth />} />
+
+        {/* Protected routes */}
         <Route
           path="/home"
           element={
@@ -41,9 +51,8 @@ function App() {
           }
         />
 
-        {/* // Redirect any unknown routes to login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Redirect any unknown routes to landing */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

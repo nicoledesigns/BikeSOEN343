@@ -121,7 +121,7 @@ const Map = ({
           // console.log(`DEBUG: COLOR OF MARKER FOR STATION ${station.stationId}: ${ratio}`)
           return (
             <StationMarker
-              key={`${station.stationId}-${activeBikeRental.bikeId || "none"}`}
+              key={`${station.stationId}-${activeBikeRental?.bikeId || "none"}`}
               station={station}
               icon={icon}
               onClickShowConfirmRental={onClickShowConfirmRental}

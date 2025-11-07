@@ -115,6 +115,10 @@ const Home = () => {
         window.location.reload();
     };
 
+    const handlePricingClick = () => {
+        navigate('/pricing');
+    };
+
     return (
         <div className="home-container">
             {isLoading && <LoadingSpinner message={loadingMessage} />}
@@ -126,6 +130,7 @@ const Home = () => {
                 handleViewHistory={handleViewHistory}
                 handleBillingClick={handleBillingClick}
                 handleHomeClick={handleHomeClick}
+                handlePricingClick={handlePricingClick}
                 activePage="home"
             />
 
