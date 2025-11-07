@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Map from '../../components/Map';
 import useHomeLogic from './useHomeLogic';
 import ReservationBanner from '../../components/reservationBanner/ReservationBanner';
@@ -6,9 +7,12 @@ import RentalTracker from '../../components/rentalTracker/RentalTracker';
 import NavigationBar from '../../components/navigationBar/NavigationBar';
 import PopupManager from '../../components/PopupManager';
 import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner';
+import MaintenanceTracker from '../../components/maintenanceTracker/MaintenanceTracker';
 import './Home.css';
 
 const Home = () => {
+    const navigate = useNavigate();
+
     const {
         // Loading states
         isLoading,
@@ -20,6 +24,8 @@ const Home = () => {
         activeReservation,
         timeLeft,
         activeBikeRental,
+        bikesUnderMaintenance,
+        activeBikeMaintenanceRemoval,
         tripSummaryData,
         // popups & control
         confirmRental,
@@ -50,10 +56,15 @@ const Home = () => {
         handleCancelEventRental,
         handleConfirmReturn,
         handleCancelConfirmationReturn,
-        handleCancelEventReturn
+        handleCancelEventReturn,
+        handleBikeMaintain,
+        handleRemoveFromMaintenance,
+        setActiveBikeMaintenanceRemoval
     } = useHomeLogic();
 
     const mapProps = {
+        bikesUnderMaintenance,
+        activeBikeMaintenanceRemoval,
         onClickShowConfirmRental,
         activeBikeRental,
         onClickShowConfirmReturn,
@@ -64,7 +75,10 @@ const Home = () => {
         onClickShowCancelReservation,
         toggleStationStatus,
         userRole,
-        rebalanceBike
+        rebalanceBike,
+        handleBikeMaintain,
+        setActiveBikeMaintenanceRemoval,
+        handleRemoveFromMaintenance
     };
 
     const popupProps = {
@@ -90,6 +104,15 @@ const Home = () => {
         setShowCancelReservationPopup
     };
 
+    const handleBillingClick = () => {
+        navigate('/billing');
+    };
+
+    const handleHomeClick = () => {
+        // Already on home page, could refresh if needed
+        window.location.reload();
+    };
+
     return (
         <div className="home-container">
             {isLoading && <LoadingSpinner message={loadingMessage} />}
@@ -99,6 +122,9 @@ const Home = () => {
                 role={role}
                 handleLogout={handleLogout}
                 handleViewHistory={handleViewHistory}
+                handleBillingClick={handleBillingClick}
+                handleHomeClick={handleHomeClick}
+                activePage="home"
             />
 
             <div className="content-wrapper">
@@ -120,49 +146,62 @@ const Home = () => {
                 </div>
 
                 <div className="dashboard-grid">
-                    <div className="map-container">
-                        <h2 className="map-title">
-                            {stations && stations.length > 0 ? (
-                                `Available Stations (${stations.length})`
-                            ) : (
-                                'Loading Stations...'
-                            )}
-                        </h2>
-                        <Map {...mapProps} {...popupProps} />
+                    <div className="map-column">
+                        <div className="map-container">
+                            <h2 className="map-title">
+                                {stations && stations.length > 0 ? (
+                                    `Available Stations (${stations.length})`
+                                ) : (
+                                    'Loading Stations...'
+                                )}
+                            </h2>
+                            <Map {...mapProps} {...popupProps} />
+                        </div>
+
+                        {/* Show maintenance tracker for operators */}
+                        {role === 'OPERATOR' && stations && stations.length > 0 && (
+                            <MaintenanceTracker
+                                bikesUnderMaintenance={bikesUnderMaintenance}
+                                activeBikeMaintenanceRemoval={activeBikeMaintenanceRemoval}
+                                setActiveBikeMaintenanceRemoval={setActiveBikeMaintenanceRemoval}
+                            />
+                        )}
                     </div>
 
-                    <div className="sidebar-container">
-                        <div className="reservation-section">
-                            {activeReservation.hasActiveReservation ? (
-                                <div className="reservation-card">
-                                    <ReservationBanner 
-                                        activeReservation={activeReservation} 
-                                        timeLeft={timeLeft} 
-                                    />
-                                </div>
-                            ) : (
-                                <div className="no-reservation-card">
-                                    <h3>No Active Reservations</h3>
-                                    <p>You currently don't have any bike reservations.</p>
-                                    <p className="helper-text">Click on a station marker to reserve a bike!</p>
-                                </div>
-                            )}
-                        </div>
-                        <div className="rental-section">
-                                {activeBikeRental.hasOngoingRental && activeBikeRental.bikeId ? (
+                    {role === 'RIDER' && (
+                        <div className="sidebar-container">
+                            <div className="reservation-section">
+                                {activeReservation.hasActiveReservation ? (
                                     <div className="reservation-card">
-                                        <RentalTracker activeBikeRental={activeBikeRental} />
+                                        <ReservationBanner
+                                            activeReservation={activeReservation}
+                                            timeLeft={timeLeft}
+                                        />
                                     </div>
                                 ) : (
                                     <div className="no-reservation-card">
-                                        <h3>No Active Rentals</h3>
-                                        <p>You don't have any bikes rented at the moment.</p>
-                                        <p className="helper-text">Find an available bike on the map to start riding!</p>
+                                        <h3>No Active Reservations</h3>
+                                        <p>You currently don't have any bike reservations.</p>
+                                        <p className="helper-text">Click on a station marker to reserve a bike!</p>
                                     </div>
                                 )}
-                                
+                            </div>
+
+                            <div className="rental-section">
+                                    {activeBikeRental.hasOngoingRental && activeBikeRental.bikeId ? (
+                                        <div className="reservation-card">
+                                            <RentalTracker activeBikeRental={activeBikeRental} />
+                                        </div>
+                                    ) : (
+                                        <div className="no-reservation-card">
+                                            <h3>No Active Rentals</h3>
+                                            <p>You don't have any bikes rented at the moment.</p>
+                                            <p className="helper-text">Find an available bike on the map to start riding!</p>
+                                        </div>
+                                    )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
             <PopupManager {...popupProps} />

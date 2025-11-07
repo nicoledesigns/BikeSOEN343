@@ -108,8 +108,26 @@ public class TripRepositoryAdapter implements TripRepository {
             tripEntity.setStatus(trip.getStatus());
         if (trip.getPricingStrategy() != null)
             tripEntity.setPricingStrategy(PricingStrategyConverter.toString(trip.getPricingStrategy()));
+        if (trip.getPricingStrategy() != null)
+            tripEntity.setPricingStrategy(PricingStrategyConverter.toString(trip.getPricingStrategy()));
 
         TripEntity entity = jpaTripRepository.save(tripEntity);
         return tripMapper.toDomain(entity);
+    }
+
+    @Override
+    public List<Trip> findAllByUserId(UserId userId) {
+        List<TripEntity> tripEntities = jpaTripRepository.findAllByUser_UserId(userId.value());
+        return tripEntities.stream()
+                .map(tripMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Trip> findAll() {
+        List<TripEntity> tripEntities = jpaTripRepository.findAll();
+        return tripEntities.stream()
+                .map(tripMapper::toDomain)
+                .toList();
     }
 }

@@ -19,4 +19,8 @@ public interface TripRepository {
     List<Trip> findAllTrips();
 
     Trip save(Trip trip);
+
+    List<Trip> findAllByUserId(UserId userId);
+
+    List<Trip> findAll();
 }

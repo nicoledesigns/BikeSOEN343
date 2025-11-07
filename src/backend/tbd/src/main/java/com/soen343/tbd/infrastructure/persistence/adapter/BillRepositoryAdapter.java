@@ -1,7 +1,9 @@
 package com.soen343.tbd.infrastructure.persistence.adapter;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.soen343.tbd.domain.model.ids.UserId;
 import com.soen343.tbd.infrastructure.persistence.entity.BillEntity;
 import org.springframework.stereotype.Repository;
 
@@ -51,5 +53,21 @@ public class BillRepositoryAdapter implements BillRepository {
 
         BillEntity entity = jpaBillRepository.save(billEntity);
         return billMapper.toDomain(entity);
+    }
+
+    @Override
+    public List<Bill> findAllByUserId(UserId userId) {
+        return jpaBillRepository.findAllByUser_UserId(userId.value())
+                .stream()
+                .map(billMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Bill> findAll() {
+        return jpaBillRepository.findAll()
+                .stream()
+                .map(billMapper::toDomain)
+                .toList();
     }
 }

@@ -1,8 +1,5 @@
 package com.soen343.tbd.application.dto;
 
-import com.soen343.tbd.domain.model.ids.ReservationId;
-import com.soen343.tbd.domain.model.ids.BikeId;
-import com.soen343.tbd.domain.model.ids.StationId;
 import java.time.LocalDateTime; // for LocalDateTime
 
 

@@ -3,6 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import StationMarker from "./stationMarker/StationMarker";
 import { useEffect, useState } from "react";
+import Legend from "./legend/Legend";
+import "./MapLegend.css"
 
 // Custom markers, for dynamic coloring
 const redDivIcon = L.divIcon({
@@ -31,7 +33,12 @@ const Map = ({
   stations: initialStations,
   toggleStationStatus, 
   userRole, 
-  rebalanceBike
+  rebalanceBike,
+  handleBikeMaintain,
+  bikesUnderMaintenance,
+  setActiveBikeMaintenanceRemoval,
+  activeBikeMaintenanceRemoval,
+  handleRemoveFromMaintenance
 }) => {
   // Center of the map, where the map will render first essentially
   const center = [45.552648, -73.681342]; // These are the coords of Montreal, kinda (found online)
@@ -63,6 +70,11 @@ const Map = ({
       });
   };
 
+  // cancel rebalancing
+  const cancelRebalance = () => {
+      setRebalanceSource({ bikeId: null, sourceDockId: null, sourceStationId: null });
+  };
+
   // rebalance to a target dock, full dto used
   const handleRebalanceTarget = async (targetDock, targetStationId) => {
       if (!rebalanceSource.bikeId) return;
@@ -84,6 +96,7 @@ const Map = ({
   };
 
   return (
+    <div style={style}>
     <MapContainer center={center} zoom={11} style={style}>
       {/* Maps generally use tiles so they dont have to render the whole world and only what fits in the map display, hence this import by Leaflet for rendering*/}
       <TileLayer
@@ -122,10 +135,22 @@ const Map = ({
               onClickShowConfirmReservation={onClickShowConfirmReservation}
               onClickShowCancelReservation={onClickShowCancelReservation}
               activeReservation={activeReservation}
+              handleBikeMaintain={handleBikeMaintain}
+              bikesUnderMaintenance={bikesUnderMaintenance}
+              setActiveBikeMaintenanceRemoval={setActiveBikeMaintenanceRemoval}
+              activeBikeMaintenanceRemoval={activeBikeMaintenanceRemoval}
+              handleRemoveFromMaintenance={handleRemoveFromMaintenance}
+              cancelRebalance={cancelRebalance}
             />
           );
         })};
     </MapContainer>
+
+    {/*Legend component, styled bottom left*/}
+    <div className="map-legend-overlay">
+        <Legend />
+      </div>"
+      </div>
   );
 };
 

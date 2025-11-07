@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.soen343.tbd.application.dto.StationDetailsDTO;
 import com.soen343.tbd.application.observer.StationSubject;
 import com.soen343.tbd.domain.model.Reservation;
 import com.soen343.tbd.domain.model.enums.BikeStatus;

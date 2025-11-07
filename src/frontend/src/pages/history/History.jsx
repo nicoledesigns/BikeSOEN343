@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavigationBar from '../../components/navigationBar/NavigationBar';
+import '../home/Home.css';
 import './History.css';
 
 const History = () => {
@@ -15,7 +17,6 @@ const History = () => {
     const [selectedBill, setSelectedBill] = useState(null);
 
     const userRole = localStorage.getItem('user_role');
-
     //Load all trips on page load (all users if operator, only user's trips if not)
     useEffect(() => {
         loadTrips();
@@ -74,21 +75,21 @@ const History = () => {
                 alert("Starting date cannot be later than finishing date");
                 setFromDate('');
                 setToDate('');
-                return allTrips; // Return all trips instead of empty array
+                return allTrips; // Return all trips
             }
 
             // Check if from date is in the future
             if (from > today) {
                 alert("Starting date cannot be in the future");
                 setFromDate('');
-                return allTrips; // Return all trips instead of empty array
+                return allTrips; // Return all trips
             }
 
             // Check if to date is in the future
             if (to > today) {
                 alert("Finishing date cannot be in the future");
                 setToDate('');
-                return allTrips; // Return all trips instead of empty array
+                return allTrips; // Return all trips
             }
         }
         // Case 2: Only from date is provided
@@ -99,7 +100,7 @@ const History = () => {
             if (from > today) {
                 alert("Starting date cannot be in the future");
                 setFromDate('');
-                return allTrips; // Return all trips instead of empty array
+                return allTrips; // Return all trips
             }
         }
         // Case 3: Only to date is provided
@@ -222,8 +223,6 @@ const History = () => {
                     Clear
                 </button>
             </div>
-
-            <h2>{userRole === 'OPERATOR' ? 'All User Trips' : `Trips for ${localStorage.getItem('user_full_name')}`}</h2>
 
             {loading ? (
                 <p>Loading...</p>

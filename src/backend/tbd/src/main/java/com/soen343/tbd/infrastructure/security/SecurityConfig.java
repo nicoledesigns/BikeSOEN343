@@ -55,8 +55,15 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authz -> authz
-                        // Allow all endpoints without authentication
-                        .anyRequest().permitAll())
+                        // the only allowed endpoints without authentication ( can be accessed without a
+                        // token)
+                        .requestMatchers("/api/login", "/api/register").permitAll()
+                        .requestMatchers("/api/stations/stream", "/api/stations/subscribe").permitAll()
+                        .requestMatchers("/api/stations/**").permitAll()  // <--- for guests map
+
+                        // all other endpoints require authentication
+                        .anyRequest().authenticated())
+                // If any exception occurs, this will handle it by redirecting to 401
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -75,9 +82,8 @@ public class SecurityConfig {
     // request, the backend will still accept it thanks to this configuration
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow all origins
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 

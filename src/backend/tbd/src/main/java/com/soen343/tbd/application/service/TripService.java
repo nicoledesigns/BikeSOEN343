@@ -22,8 +22,6 @@ import com.soen343.tbd.domain.model.enums.EntityStatus;
 import com.soen343.tbd.domain.model.ids.*;
 import com.soen343.tbd.domain.repository.*;
 
-import jakarta.persistence.Entity;
-
 @Service
 public class TripService {
     private static final Logger logger = LoggerFactory.getLogger(TripService.class);
@@ -182,10 +180,6 @@ public class TripService {
 
             newTrip = tripRepository.save(newTrip);
             logger.info("Trip saved successfully");
-
-            // Retrieve the generated trip with its generated id
-            newTrip = tripRepository.checkRentalsByUserId(userId)
-                    .orElse(null);
         } catch (Exception e) {
             logger.warn("New Trip unable to be created", e);
             throw new RuntimeException("Failed to create trip during rent", e);
