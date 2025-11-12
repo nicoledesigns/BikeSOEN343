@@ -123,6 +123,12 @@
     font-size: 0.9em;
 }
 
+.tier-none {
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(127, 140, 141, 0.3);
+}
+
 .tier-bronze {
     background: linear-gradient(135deg, #cd7f32 0%, #a0522d 100%);
     color: white;

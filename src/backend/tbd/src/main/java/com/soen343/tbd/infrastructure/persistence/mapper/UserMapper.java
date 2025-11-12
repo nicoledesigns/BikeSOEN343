@@ -60,6 +60,7 @@ public abstract class UserMapper {
 
     // Domain -> Entity
     @Mapping(target = "userId", expression = "java(domain.getUserId() != null ? domain.getUserId().value() : null)")
+    @Mapping(target = "tier", expression = "java(domain.getTier())")
     @Mapping(target = "updatedAt", expression = "java(new java.sql.Timestamp(System.currentTimeMillis()))")
     // Ignore nested relationships since they're never used and cause performance issues
     @Mapping(target = "bills", ignore = true)
