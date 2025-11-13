@@ -234,7 +234,8 @@ public class ReservationService {
     // EXPIRE RESERVATION
     // -------------------------
     @Transactional
-    public void expireReservation(ReservationId reservationId) {
+    //handles bike expiration logic and returns the user id for which a reservation has expired
+    public UserId expireReservation(ReservationId reservationId) {
         Reservation expiredReservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
@@ -281,6 +282,8 @@ public class ReservationService {
 
             logger.info("Reservation {} expired, bike set to AVAILABLE", reservationId.value());
         }
+
+        return expiredReservation.getUserId();
     }
 
     private void notifyAllUsers(StationId stationId) {
