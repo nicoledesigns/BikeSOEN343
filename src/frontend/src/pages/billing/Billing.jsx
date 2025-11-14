@@ -35,7 +35,7 @@ function Billing() {
   useEffect(() => {
     let retryTimer = null;
     const eventSource = new EventSource(
-      "http://localhost:8080/api/stations/subscribe",
+      "http://localhost:8080/api/stations/subscribe", // generic sse endpoint that broadcasts multiple events (name is misleading)
       {
         withCredentials: true,
       }
@@ -48,7 +48,7 @@ function Billing() {
       setSseRetryCount(0);
     };
 
-    // sse connection for billing history
+    // sse listens for billing events
     eventSource.addEventListener("operator-bill-update", (event) => {
       try {
         const billData = JSON.parse(event.data);
