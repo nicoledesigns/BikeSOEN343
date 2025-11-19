@@ -160,15 +160,15 @@ public class TripService {
 
         // Update station object
         try {
-            EntityStatus previousStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationStatus());
+            EntityStatus previousStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationAvailability());
             int currentBikes = selectedStation.getNumberOfBikesDocked();
             selectedStation.decrementBikesDocked();
             stationRepository.save(selectedStation);
-            EntityStatus newStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationStatus());
+            EntityStatus newStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationAvailability());
 
             if (previousStatus != newStatus) {
                 safelyCreateAndNotifyEvent(EntityType.STATION, stationId.value(),
-                        "Station status changed due to bike rental",
+                        "ALERT! Station is empty! Rebalance Required!",
                         previousStatus, newStatus, "User_" + userId.value());
             }
 
@@ -259,7 +259,7 @@ public class TripService {
                     "Dock occupied by returned bike", previousStatus, newStatus,
                     "User_" + userId.value());
 
-            logger.info("Updated dock status to OCCUPIED");
+            logger.info("Updated dock status to STATION_OCCUPIED");
         } catch (Exception e) {
             logger.warn("Dock unable to be updated/saved", e);
             throw new RuntimeException("Failed to update dock during return", e);
@@ -267,15 +267,15 @@ public class TripService {
 
         // Update station object
         try {
-            EntityStatus previousStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationStatus());
+            EntityStatus previousStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationAvailability());
             int currentBikes = selectedStation.getNumberOfBikesDocked();
             selectedStation.incrementBikesDocked();
             stationRepository.save(selectedStation);
-            EntityStatus newStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationStatus());
+            EntityStatus newStatus = EntityStatus.fromSpecificStatus(selectedStation.getStationAvailability());
 
             if (previousStatus != newStatus) {
                 safelyCreateAndNotifyEvent(EntityType.STATION, stationId.value(),
-                        "Station status changed due to bike return",
+                        "ALERT! Station is full! Rebalance Required!",
                         previousStatus, newStatus, "User_" + userId.value());
             }
 

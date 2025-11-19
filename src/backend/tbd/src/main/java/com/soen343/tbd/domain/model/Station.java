@@ -104,18 +104,18 @@ public class Station {
     public void incrementBikesDocked(){
         this.numberOfBikesDocked++;
         if (this.numberOfBikesDocked == this.capacity) {
-            this.stationAvailability = StationAvailability.FULL;
+            this.stationAvailability = StationAvailability.STATION_FULL;
         } else if (this.numberOfBikesDocked > 0) {
-            this.stationAvailability = StationAvailability.OCCUPIED;
+            this.stationAvailability = StationAvailability.STATION_OCCUPIED;
         }
     }
 
     public void decrementBikesDocked(){
         this.numberOfBikesDocked--;
         if (this.numberOfBikesDocked == 0) {
-            this.stationAvailability = StationAvailability.EMPTY;
+            this.stationAvailability = StationAvailability.STATION_EMPTY;
         } else if (this.numberOfBikesDocked > 0) {
-            this.stationAvailability = StationAvailability.OCCUPIED;
+            this.stationAvailability = StationAvailability.STATION_OCCUPIED;
         }
     }
 
