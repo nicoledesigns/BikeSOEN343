@@ -37,10 +37,17 @@ public class TripService {
     private final StationSubject stationPublisher;
     private final StationService stationService;
     private final EventService eventService;
+    private final FlexMoneyService flexMoneyService;
 
-    public TripService(BillRepository billRepository, TripRepository tripRepository, BikeRepository bikeRepository,
-            DockRepository dockRepository, StationRepository stationRepository, StationSubject stationPublisher,
-            StationService stationService, EventService eventService) {
+    public TripService(BillRepository billRepository, 
+            TripRepository tripRepository, 
+            BikeRepository bikeRepository,
+            DockRepository dockRepository, 
+            StationRepository stationRepository, 
+            StationSubject stationPublisher,
+            StationService stationService, 
+            EventService eventService, 
+            FlexMoneyService flexMoneyService) {
         this.billRepository = billRepository;
         this.tripRepository = tripRepository;
         this.bikeRepository = bikeRepository;
@@ -49,6 +56,7 @@ public class TripService {
         this.stationPublisher = stationPublisher;
         this.stationService = stationService;
         this.eventService = eventService;
+        this.flexMoneyService = flexMoneyService;
     }
 
     /**
@@ -313,6 +321,14 @@ public class TripService {
             logger.warn("New Bill unable to be created", e);
             throw new RuntimeException("Failed to save bill during return", e);
         }
+
+        // check for flex money eligibility (after bill so it doesn't get applied to the trip immediately)
+        try {
+            flexMoneyService.addFlexMoneyIfEligible(userId, selectedStation);
+        } catch (Exception e) {
+            logger.warn("Failed giving flex money to user: {}", userId.value(), e);
+        }
+        
 
         logger.info("Bike return completed successfully!");
 
