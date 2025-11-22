@@ -558,7 +558,7 @@ function Billing() {
                                         </span>
                                         <span>${(selectedBill.regularCost - selectedBill.baseFare).toFixed(2)}</span>
                                     </div>
-                                    {selectedBill.regularCost > selectedBill.totalAmount && (
+                                    {(selectedBill.regularCost - selectedBill.totalAmount >= 0.01) && (
                                         <div className="breakdown-item discount-row">
                                             <span>Total Savings (Tier + FlexMoney)</span>
                                             <span>-${(selectedBill.regularCost - selectedBill.totalAmount).toFixed(2)}</span>
