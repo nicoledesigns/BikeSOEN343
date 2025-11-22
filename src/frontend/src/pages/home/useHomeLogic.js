@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -46,6 +46,9 @@ export default function useHomeLogic() {
     const fullName = localStorage.getItem('user_full_name');
     const role = localStorage.getItem('user_role');
     let userEmail = localStorage.getItem('user_email');
+
+    // Ref to keep track of the last seen tier
+    const lastTierRef = useRef(localStorage.getItem('tier'));
 
     // Loading wrapper function
     const withLoading = async (message, operation) => {
@@ -315,6 +318,22 @@ export default function useHomeLogic() {
         
         return () => clearInterval(interval);
     }, [activeReservation]);
+
+    // Window alert upon tier change (while logged in)
+    // Added interval so that constantly checking
+    useEffect(() => {
+
+        const interval = setInterval(() => {
+            const currentTier = localStorage.getItem('tier');
+            if (lastTierRef.current && currentTier && lastTierRef.current !== currentTier) {
+                alert(`Your loyalty tier has changed: ${lastTierRef.current} → ${currentTier}`);
+                lastTierRef.current = currentTier;
+                localStorage.setItem('previousTier', currentTier);
+            }
+        }, 2000); // Checking every 2 seconds
+
+    return () => clearInterval(interval);
+}, []);
 
     // API Operations
     const toggleStationStatus = async (stationId, currentStatus) => {

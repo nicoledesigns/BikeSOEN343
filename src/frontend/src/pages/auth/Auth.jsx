@@ -78,7 +78,8 @@ const Auth = () => {
           password: formData.password,
         });
 
-        const { token, email, fullName, role, username, tier, flexMoney } = response.data || {};
+        const { token, email, fullName, role, username, tier, flexMoney } =
+          response.data || {};
 
         // Ensure we actually received a valid token from the server
         if (!token || token === "undefined" || token === "null") {
@@ -93,8 +94,17 @@ const Auth = () => {
         localStorage.setItem("user_role", role);
         localStorage.setItem("username", username);
         localStorage.setItem("actual_user_role", role); // to keep track of actual role if switched
-        localStorage.setItem("tier", tier || 'NONE'); // Store user tier
+        localStorage.setItem("tier", tier || "NONE"); // Store user tier
         localStorage.setItem("flexMoney", flexMoney || 0); // Store flex money
+
+        const previousTierKey = `previousTier_${email}`; // storing w email to differentiate users, otherwise will show popup anytime login w a different user when their tiers are different
+        const previousTier = localStorage.getItem(previousTierKey);
+        const newTier = tier || "NONE";
+
+        if (previousTier && previousTier !== newTier) {
+          alert(`Your loyalty tier has changed: ${previousTier} → ${newTier}`);
+        }
+        localStorage.setItem(previousTierKey, newTier);
 
         // Set default header for future requests
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -154,7 +164,6 @@ const Auth = () => {
               <h4>{isLogin ? "Login" : "Sign Up"}</h4>
             </div>
             <div className="card-body">
-
               {/* Back to Landing Page Button */}
               <div style={{ textAlign: "center", marginBottom: "15px" }}>
                 <button
@@ -167,7 +176,7 @@ const Auth = () => {
                     border: "none",
                     borderRadius: "8px",
                     cursor: "pointer",
-                    fontWeight: "600"
+                    fontWeight: "600",
                   }}
                 >
                   Back to Landing Page
