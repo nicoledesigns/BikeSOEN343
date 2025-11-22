@@ -39,12 +39,23 @@ public class TripService {
     private final StationService stationService;
     private final EventService eventService;
     private final UserService userService;
+    private final FlexMoneyService flexMoneyService;
+    private final BillingService billingService;
     private final SSEStationObserver sseStationObserver;
     private final UserRepository userRepository;
 
-    public TripService(BillRepository billRepository, TripRepository tripRepository, BikeRepository bikeRepository,
-            DockRepository dockRepository, StationRepository stationRepository, StationSubject stationPublisher,
-            StationService stationService, EventService eventService, UserService userService, SSEStationObserver sseStationObserver,
+    public TripService(BillRepository billRepository, 
+            TripRepository tripRepository, 
+            BikeRepository bikeRepository,
+            DockRepository dockRepository, 
+            StationRepository stationRepository, 
+            StationSubject stationPublisher,
+            StationService stationService, 
+            EventService eventService, 
+            UserService userService, 
+            FlexMoneyService flexMoneyService,
+            BillingService billingService
+        , SSEStationObserver sseStationObserver,
             UserRepository userRepository) {
         this.billRepository = billRepository;
         this.tripRepository = tripRepository;
@@ -54,6 +65,8 @@ public class TripService {
         this.stationPublisher = stationPublisher;
         this.stationService = stationService;
         this.eventService = eventService;
+        this.flexMoneyService = flexMoneyService;
+        this.billingService = billingService;
         this.userService = userService;
         this.sseStationObserver = sseStationObserver;
         this.userRepository = userRepository;
@@ -302,11 +315,22 @@ public class TripService {
 
         // Complete the given trip and compute the bill
         Bill resultingBill = null;
+        double flexMoneyUsed = 0.0;
+        double discountRate = 0.0;
         try {
-            double discountRate = userService.getUserById(userId).getCurrentDiscount();
+            discountRate = userService.getUserById(userId).getCurrentDiscount();
 
             EntityStatus previousStatus = EntityStatus.fromSpecificStatus(currentTrip.getStatus());
             resultingBill = currentTrip.endTrip(selectedStation.getStationId(), discountRate);
+            
+            // Round the bill to 2 decimal places before applying FlexMoney to avoid precision issues
+            double roundedCost = Math.round(resultingBill.getDiscountedCost() * 100.0) / 100.0;
+            resultingBill.setDiscountedCost(roundedCost);
+
+            double costBeforeFlex = resultingBill.getDiscountedCost();
+            resultingBill = billingService.applyFlexMoney(resultingBill, userId);
+            flexMoneyUsed = costBeforeFlex - resultingBill.getDiscountedCost();
+            
             tripRepository.save(currentTrip);
             EntityStatus newStatus = EntityStatus.fromSpecificStatus(currentTrip.getStatus());
 
@@ -328,7 +352,9 @@ public class TripService {
             
             // Restore the value after save (since mapper ignores regularCost when loading from DB)
             resultingBill.setRegularCost(regularCost);
-            
+            resultingBill.setFlexMoneyUsed(flexMoneyUsed);
+            resultingBill.setLoyaltyDiscount(discountRate);
+
             logger.info("Bill assigned and saved successfully");
 
             sendCompleteBillToOperators(resultingBill, currentTrip);
@@ -336,6 +362,21 @@ public class TripService {
             logger.warn("New Bill unable to be created", e);
             throw new RuntimeException("Failed to save bill during return", e);
         }
+
+        // check for flex money eligibility (after bill so it doesn't get applied to the trip immediately)
+        Integer flexMoneyEarned = 0;
+        try {
+            flexMoneyEarned = flexMoneyService.addFlexMoneyIfEligible(userId, selectedStation, currentTrip.calculateDurationInMinutes());
+            if (flexMoneyEarned > 0) {
+                logger.info("User earned {} flex money points for returning at a low-fullness station", flexMoneyEarned);
+                resultingBill.setFlexMoneyEarned(flexMoneyEarned);
+            } else {
+                logger.info("User did not earn any flex money points for this trip");
+            }
+        } catch (Exception e) {
+            logger.warn("Failed giving flex money to user: {}", userId.value(), e);
+        }
+        
 
         logger.info("Bike return completed successfully!");
 
