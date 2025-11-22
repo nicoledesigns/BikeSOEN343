@@ -80,7 +80,7 @@
 
 /* Scrollable billing content area */
 .billing-container {
-    height: calc(100vh - 200px);
+    height: inherit;
     display: flex;
     flex-direction: column;
 }
@@ -335,7 +335,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
     animation: slideIn 0.3s ease;
-    height: calc(100vh - 200px);
+    height: inherit;
     overflow-y: auto;
 }
 
