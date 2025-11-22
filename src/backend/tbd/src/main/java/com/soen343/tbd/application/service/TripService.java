@@ -207,7 +207,18 @@ public class TripService {
                 safelyCreateAndNotifyEvent(EntityType.TRIP, newTrip.getTripId().value(),
                         "New trip started", EntityStatus.NONE, EntityStatus.ONGOING,
                         "User_" + userId.value());
+                // Send trip update to SSE clients (for trip history tab)
+                Map<String, Object> tripData = new HashMap<>();
+                tripData.put("tripId", newTrip.getTripId().value());
+                tripData.put("userId", userId.value());
+                tripData.put("bikeId", bikeId.value());
+                tripData.put("startStationId", stationId.value());
+                tripData.put("startTime", newTrip.getStartTime() != null ? newTrip.getStartTime().toString() : null);
+                tripData.put("bikeType", selectedBike.getBikeType().name());
+                tripData.put("status", newTrip.getStatus().name());
+                sseStationObserver.sendTripUpdate(tripData);
             }
+
         } catch (Exception e) {
             logger.warn("New Trip unable to be created", e);
             throw new RuntimeException("Failed to create trip during rent", e);
@@ -311,6 +322,21 @@ public class TripService {
             safelyCreateAndNotifyEvent(EntityType.TRIP, tripId.value(),
                     "Trip completed", previousStatus, newStatus,
                     "User_" + userId.value());
+            // Send trip update to SSE clients (for trip history tab)
+            Map<String, Object> tripData = new HashMap<>();
+            tripData.put("tripId", currentTrip.getTripId().value());
+            tripData.put("userId", userId.value());
+            tripData.put("bikeId", bikeId.value());
+            tripData.put("startStationId", currentTrip.getStartStationId().value());
+            tripData.put("endStationId", stationId.value());
+            tripData.put("startTime",
+                    currentTrip.getStartTime() != null ? currentTrip.getStartTime().toString() : null);
+            tripData.put("endTime", currentTrip.getEndTime() != null ? currentTrip.getEndTime().toString() : null);
+            tripData.put("bikeType", selectedBike.getBikeType().name());
+            tripData.put("status", currentTrip.getStatus().name());
+            tripData.put("billId", resultingBill != null ? resultingBill.getBillId().value() : null);
+            tripData.put("billCost", resultingBill != null ? resultingBill.getCost() : null);
+            sseStationObserver.sendTripUpdate(tripData);
 
             logger.info("Trip ended successfully");
         } catch (Exception e) {
