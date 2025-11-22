@@ -59,10 +59,21 @@ const History = () => {
           const i = prevTrips.findIndex((t) => t.tripId === tripData.tripId);
           if (i !== -1) {
             const updated = [...prevTrips];
-            updated[i] = { ...updated[i], ...tripData };
+            const updatedTrip = {
+              ...updated[i],
+              ...tripData,
+              // If username is missing in update, keep the existing one
+              userName:
+                tripData.userName || tripData.username || updated[i].userName,
+            };
+            updated[i] = updatedTrip;
             return updated;
           } else {
-            return [tripData, ...prevTrips];
+            const newTrip = {
+              ...tripData,
+              userName: tripData.userName || tripData.username || "Unknown",
+            };
+            return [newTrip, ...prevTrips];
           }
         });
       } catch (error) {

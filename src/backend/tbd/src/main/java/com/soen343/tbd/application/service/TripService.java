@@ -332,6 +332,7 @@ public class TripService {
         Map<String, Object> tripData = new HashMap<>();
         tripData.put("tripId", currentTrip.getTripId().value());
         tripData.put("userId", userId.value());
+        tripData.put("userName", userRepository.findById(userId).map(User::getUsername).orElse("Unknown"));
         tripData.put("bikeId", bikeId.value());
         tripData.put("startStationId", currentTrip.getStartStationId().value());
         tripData.put("endStationId", stationId.value());
