@@ -59,6 +59,7 @@ public class SecurityConfig {
                         // token)
                         .requestMatchers("/api/login", "/api/register").permitAll()
                         .requestMatchers("/api/stations/stream", "/api/stations/subscribe").permitAll()
+                        .requestMatchers("/api/events/subscribe").permitAll()
                         .requestMatchers("/api/stations/**").permitAll()
                         .requestMatchers("/api/test/generate-gold-trips/**", "/api/test/generate-silver-trips/**", "/api/test/generate-bronze-trips/**").permitAll()
                         // Require authentication for all other requests

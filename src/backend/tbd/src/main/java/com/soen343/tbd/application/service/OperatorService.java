@@ -284,6 +284,7 @@ public class OperatorService {
             new MaintenanceUpdateDTO(
                 bike.getBikeId().value(),
                 bike.getStatus().name(),
+                bike.getBikeType().name(),
                 stationId.value(),
                 "", // station name not needed here
                 dockId.value(),
@@ -357,6 +358,7 @@ public class OperatorService {
             new MaintenanceUpdateDTO(
                 bike.getBikeId().value(),
                 bike.getStatus().name(),
+                bike.getBikeType().name(),
                 stationId.value(),
                 "", // station name not needed here
                 dockId.value(),

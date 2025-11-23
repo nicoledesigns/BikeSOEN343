@@ -4,15 +4,17 @@ package com.soen343.tbd.application.dto;
 public class MaintenanceUpdateDTO {
     private Long bikeId;
     private String bikeStatus;
+    private String bikeType;
     private Long stationId;
     private String stationName;
     private Long dockId;
     private String action; // "ADDED" or "REMOVED"
 
-    public MaintenanceUpdateDTO(Long bikeId, String bikeStatus, Long stationId, 
+    public MaintenanceUpdateDTO(Long bikeId, String bikeStatus, String bikeType, Long stationId, 
                                 String stationName, Long dockId, String action) {
         this.bikeId = bikeId;
         this.bikeStatus = bikeStatus;
+        this.bikeType = bikeType;
         this.stationId = stationId;
         this.stationName = stationName;
         this.dockId = dockId;
@@ -24,6 +26,9 @@ public class MaintenanceUpdateDTO {
     
     public String getBikeStatus() { return bikeStatus; }
     public void setBikeStatus(String bikeStatus) { this.bikeStatus = bikeStatus; }
+    
+    public String getBikeType() { return bikeType; }
+    public void setBikeType(String bikeType) { this.bikeType = bikeType; }
     
     public Long getStationId() { return stationId; }
     public void setStationId(Long stationId) { this.stationId = stationId; }

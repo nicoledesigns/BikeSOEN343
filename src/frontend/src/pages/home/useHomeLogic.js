@@ -131,13 +131,13 @@ export default function useHomeLogic() {
                 operatorEventSource.onerror = () => {
                     console.error('SSE connection error');
                     operatorEventSource.close();
-                    setIsConnected(false);
+                    setOperatorIsConnected(false);
 
-                    if (retryCount < MAX_RETRIES) {
+                    if (operatorRetryCount < MAX_RETRIES) {
                         const timeout = RETRY_DELAY * Math.pow(2, operatorRetryCount);
                         console.log(`Retrying SSE in ${timeout}ms`);
                         operatorRetryTimer = setTimeout(() => {
-                            setRetryCount(prev => prev + 1);
+                            setOperatorRetryCount(prev => prev + 1);
                             connect(); // re-establish manually
                         }, timeout);
                     }
@@ -224,7 +224,8 @@ export default function useHomeLogic() {
                             console.log('DEBUG: Adding bike to maintenance list:', maintenanceData.bikeId);
                             return [...currentBikes, {
                                 bikeId: maintenanceData.bikeId,
-                                status: maintenanceData.bikeStatus
+                                status: maintenanceData.bikeStatus,
+                                bikeType: maintenanceData.bikeType
                             }];
                         }
                         return currentBikes;

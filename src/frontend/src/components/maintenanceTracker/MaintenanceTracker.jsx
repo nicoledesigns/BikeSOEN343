@@ -29,6 +29,7 @@ const MaintenanceTracker = ({ bikesUnderMaintenance, activeBikeMaintenanceRemova
                                         Bike #{bike.bikeId}
                                     </div>
                                     <div className="maintenance-bike-type">
+                                        {console.log(bike.bikeType)}
                                         Bike Type: {bike.bikeType}
                                     </div>
                                 </div>
